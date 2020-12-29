@@ -1,0 +1,23 @@
+{
+  "name": "faq-service-bff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/adilafattobene/faq-service-bff.git"
+  },
+  "author": "adila.fattobene",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/adilafattobene/faq-service-bff/issues"
+  },
+  "homepage": "https://gitlab.com/adilafattobene/faq-service-bff#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6"
+  }
+}
