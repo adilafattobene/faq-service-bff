@@ -2,8 +2,8 @@ const express = require("express");
 const consign = require("consign");
 const app = express();
 
-consign()
-    .include("app/routes")
+consign({ cwd: "./src/app" })
+    .include("routes")
     .into(app);
 
 module.exports = app;
