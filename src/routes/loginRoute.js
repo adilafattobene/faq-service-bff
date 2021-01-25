@@ -1,4 +1,4 @@
-const controller = require("../controller/loginController");
+const controller = require("../api/controller/loginController");
 
 module.exports = app => {
     app.get("/login", controller.getLogin);
