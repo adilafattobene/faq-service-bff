@@ -1,17 +1,15 @@
-const client = require("../clients/accountServiceClient");
 const loginService = require("../services/loginService");
 
 exports.getLogin = (req, res, next) => {
-    //TODO
-
-    //Buscar user
-    let user = client.getUserPassword("email@teste");
-
-    res.status(200).send("Requisição login: " + user);
+    try {
+        const response = await loginService.getLogin(req.body);
+        return res.status(200).send("Requisição getLogin: " + response);
+    } catch (err){
+        return res.status(500).send("Erro getLogin " + err);
+    }
 };
 
 exports.createLogin = async (req, res, next) => {
-    console.log(req.body)
     try {
         const response = await loginService.createLogin(req.body);
         console.log(response)
@@ -22,22 +20,10 @@ exports.createLogin = async (req, res, next) => {
 };
 
 exports.checkToken = (req, res, next) => {
-    //TODO
-
-    //Buscar userPass
-    let user = client.getUserPassword;
-
-    //Verificar se é igual ao recebido
-    res.status(200).send("Requisição token: " + user);
-};
-
-hashingPassword = function (psw, next) {
-    const saltRounds = 10;
-
-    bcrypt.hash(psw, saltRounds).then(function (hash) {
-        if (!hash) {
-        next();
-        }
-        next(hash);
-    });
+    try {
+        const response = await loginService.checkToken(req.body);
+        return res.status(200).send("Requisição token: " + response);
+    } catch (err){
+        return res.status(500).send("Erro Requisição token " + err);
+    }
 };

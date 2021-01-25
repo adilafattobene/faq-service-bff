@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 
 exports.hashingPassword = function (psw, next) {
-    console.log("aqui")
-    const saltRounds = 10;
+    //TODO retirar a quantidade de saltos e armazenar em um env
+    const saltRounds = 10; 
 
     bcrypt.hash(psw, saltRounds).then(function (hash) {
         if (!hash) {
@@ -11,3 +11,6 @@ exports.hashingPassword = function (psw, next) {
         next(hash);
     });
 };
+
+
+
