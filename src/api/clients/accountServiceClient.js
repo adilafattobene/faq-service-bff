@@ -4,7 +4,22 @@ exports.getUser = (userId) => {
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
     password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
-    profile: ""
+    profile: "OWNER",
+  };
+
+  return JSON.stringify(resp);
+};
+
+exports.getUserByEmail = (userEmail) => {
+
+  console.log(userEmail);
+  
+  //TODO GET
+  let resp = {
+    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
+    email: "teste@teste.com.br",
+    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
+    profile: "OWNER",
   };
 
   return JSON.stringify(resp);

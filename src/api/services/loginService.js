@@ -2,15 +2,25 @@ const hashService = require ("../services/hashService");
 const jwtService = require ("../services/jwtService");
 const accountClient = require("../clients/accountServiceClient");
 
-//TODO
-exports.getLogin = async (login) => {
+exports.getLoginByEmail = (login) => {
     
-    accountClient.getUserPassword();
+    const response = accountClient.getUser(login.email);
+
+    if (response){
+        const userEmail = response.email;
+        const userProfile = response.profile;
+
+        const jwtPayload = { userEmail , userProfile };
+
+        const jwtToken = jwtService.createJwtToken(jwtPayload);
+        
+        return { 
+                auth: true,
+                token: jwtToken
+            };
+    }
     
-    return { 
-        email: "email",
-        jwtToken: "token",
-    };
+    throw Error("Error during getting login")
 }
 
 //TODO
