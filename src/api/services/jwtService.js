@@ -1,9 +1,8 @@
 
 exports.createJwtToken = async (payload) => {
-    //TODO Levar para o .env
-    let secret = "secret";
-
-    const token = jwt.sign(payload, secret, {
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
+
+    return token;
 }
