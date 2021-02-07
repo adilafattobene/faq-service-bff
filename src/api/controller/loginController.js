@@ -12,8 +12,9 @@ exports.getLogin = (req, res, next) => {
 
 exports.createLogin = async (req, res, next) => {
     try {
-        const response = await loginService.createLogin(req.body);
-        return res.status(201).send("Requisição criaçãoLogin: " + response);
+        loginService.createLogin(req.body, function (response) {
+            return res.status(201).json(response);
+        });
     } catch (err){
         return res.status(500).send("Erro createLogin");
     }

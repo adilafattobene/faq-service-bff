@@ -20,36 +20,39 @@ exports.getLoginByEmail = (login) => {
             };
     }
     
-    throw Error("Error during getting login")
+    throw Error("Error during getting login");
 }
 
-//TODO
-exports.createLogin = async (login) => {
+exports.createLogin = async (login, next) => {
 
     hashService.hashingPassword(login.password, function (hashedPassword) {
         if (!hashedPassword) {
-            //TODO
             throw Error("Error during hash password");
         }
         
         let loginHashed = {
-            email: login.email,
+            email: login.login,
             password: hashedPassword
         }
 
-        const userLogin = accountClient.createUserLogin(loginHashed);
+        const response = accountClient.createUserLogin(loginHashed);
         
-        //TODO
-        const payload = { login };
-        
-        //TODO
-        const jwtToken = jwtService.createJwtToken();
+        if(response){
+            const userEmail = response.email;
+            const userProfile = response.profile;
 
-        return { 
-            email: userLogin.email,
-            jwtToken: jwtToken,
-        };
-        
+            const jwtPayload = { userEmail , userProfile };
+
+            const jwtToken = jwtService.createJwtToken(jwtPayload);
+            
+            return next({ 
+                    auth: true,
+                    token: jwtToken
+                });
+        }
+
+            
+        throw Error("Error during creating login");
     });
 }
 
