@@ -57,7 +57,7 @@ exports.createUserLogin = (user) => {
     profile: "OWNER"
   };
 
-  return JSON.stringify(resp);
+  return resp;
 }
 
 exports.changeUser = (user, userId) => {
