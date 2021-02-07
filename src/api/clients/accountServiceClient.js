@@ -48,7 +48,7 @@ exports.createUser = (user) => {
   return JSON.stringify(resp);
 }
 
-exports.createUserLogin = async (user) => {
+exports.createUserLogin = (user) => {
   //TODO POST
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
