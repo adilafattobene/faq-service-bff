@@ -35,17 +35,17 @@ exports.getUserPassword = (userEmail) => {
   return JSON.stringify(resp);
 };
 
-exports.createUser = (user) => {
+exports.createUser = ( user ) => {
   //TODO POST
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
     email: "teste@teste.com.br",
     password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
-    profile: "OWNER",
+    profile: user.profile,
     name: "Usuário Teste"
   };
 
-  return JSON.stringify(resp);
+  return resp;
 }
 
 exports.createUserLogin = (user) => {
