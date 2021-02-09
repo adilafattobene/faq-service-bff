@@ -2,17 +2,21 @@ const client = require("../clients/accountServiceClient");
 const service = require("../services/userService")
 
 exports.getUser = (req, res, next) => {
-  //TODO
-  //Verificar se está autenticado
-
-  //Buscar user
-  let user = client.getUser;
-
-  //Criptografar
-
-  //Retornar ao front
-
-  res.send("Requisição getUserById: " + req.params.id);
+  const token = req.headers['x-access-token'];
+  if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
+  
+  try {
+    
+      service.getUser(token, req.params.id, function(response) {
+      return res.status(201).json(response);
+    });  
+  } catch (err){
+    if(err.message === "NotFound") {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    
+    return res.status(500).send("Erro Requisição getUser " + err);
+  }
 };
 
 exports.createUser = (req, res, next) => {
@@ -55,4 +59,4 @@ exports.changeUser = (req, res, next) => {
     let userChanged = client.changeUser;
   
     res.send("Requisição changeUser");
-  };
+};

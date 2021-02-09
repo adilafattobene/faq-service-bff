@@ -2,8 +2,22 @@ const accountClient = require("../clients/accountServiceClient");
 const jwtService = require ("../services/jwtService");
 const hashService = require ("../services/hashService");
 
-exports.getUserPassword = () => {
-    return accountClient.getUserPassword("email@teste");
+exports.getUser = (token, userId, next ) => {
+
+    try{
+        jwtService.verifyToken( token, function( response ) {
+
+            let user = accountClient.getUser( userId );
+
+            if( user ) {
+                next( user );
+            } else {
+                throw Error( "NotFound" );
+            }
+        });
+    }catch(err){
+        throw err;
+    }
 };
 
 exports.createUser = ( token, user, next ) => {
