@@ -2,28 +2,51 @@ exports.getUser = (userId) => {
 
   //TODO GET
   let resp = {
-    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
+    userId: "c9ac28ac-dad7-42c5-b062-4be9428453da",
+    email: "testeA@teste.com.br",
     profile: "OWNER",
+    userChildren: [
+      {
+        userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
+        email: "testeB@teste.com.br",
+        profile: "CAIXA"
+      },
+      {
+        userId: "c9ac28ac-dad7-42c5-b062-4be9428453dc",
+        email: "testeB@teste.com.br",
+        profile: "DRIVER"
+      },
+    ],
   };
 
-  return JSON.stringify(resp);
+  return resp;
 };
 
-exports.getUserByEmail = (userEmail) => {
+// exports.getUserByEmail = (userEmail) => {
 
-  console.log(userEmail);
+//   console.log(userEmail);
   
-  //TODO GET
-  let resp = {
-    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
-    email: "teste@teste.com.br",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
-    profile: "OWNER",
-  };
+//   //TODO GET
+//   let resp = {
+//     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
+//     email: "teste@teste.com.br",
+//     profile: "OWNER",
+//     userChildren: [
+//       {
+//         userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
+//         email: "teste@teste.com.br",
+//         profile: "CAIXA"
+//       },
+//       {
+//         userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
+//         email: "teste@teste.com.br",
+//         profile: "DRIVER"
+//       },
+//     ],
+//   };
 
-  return JSON.stringify(resp);
-};
+//   return resp;
+// };
 
 exports.getUserPassword = (userEmail) => {
   //TODO GET
@@ -32,7 +55,7 @@ exports.getUserPassword = (userEmail) => {
     password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
   };
 
-  return JSON.stringify(resp);
+  return resp;
 };
 
 exports.createUser = ( user ) => {
@@ -40,7 +63,6 @@ exports.createUser = ( user ) => {
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
     email: "teste@teste.com.br",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
     profile: user.profile,
     name: "Usuário Teste"
   };
@@ -53,7 +75,6 @@ exports.createUserLogin = (user) => {
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
     email: "teste@teste.com.br",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
     profile: "OWNER"
   };
 
@@ -65,9 +86,8 @@ exports.changeUser = (user, userId) => {
   let resp = {
     userId: userId,
     email: "teste@teste.com.br",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
     profile: "OWNER"
   };
 
-  return JSON.stringify(resp);
+  return resp;
 }
