@@ -25,3 +25,28 @@ exports.getFaq = ( token, next ) => {
         throw err;
     }
 }
+
+exports.getFaqBySlug = ( token, slug, next ) => {
+    
+    try{
+        if(token){
+            jwtService.verifyToken( token, function( response ) {
+
+                let faq = cmsServiceClient.getFaqBySlug( response.profile, slug );
+    
+                if( faq ) {
+                    return next( faq );
+                } else {
+                    throw Error( "NotFound" );
+                }
+            });
+        } else {
+            let faq = cmsServiceClient.getFaqBySlug( "DEFAULT", slug );
+            
+            return next( faq );
+        }
+        
+    }catch(err){
+        throw err;
+    }
+}
