@@ -8,3 +8,10 @@ exports.createJwtToken = (payload) => {
 
     return token;
 }
+
+exports.verifyToken = ( token, next ) => {
+    jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+        if (err) throw err;
+        next(decoded);
+    });
+}
