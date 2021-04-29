@@ -18,6 +18,7 @@
   },
   "homepage": "https://gitlab.com/adilafattobene/faq-service-bff#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "consign": "^0.1.6",
     "dotenv": "^8.2.0",
