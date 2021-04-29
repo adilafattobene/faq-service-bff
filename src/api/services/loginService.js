@@ -1,70 +1,71 @@
-const hashService = require ("../services/hashService");
-const jwtService = require ("../services/jwtService");
+const hashService = require("../services/hashService");
+const jwtService = require("../services/jwtService");
 const accountClient = require("../clients/accountServiceClient");
 
-exports.getLoginByEmail = (login) => {
-    
-    const response = accountClient.getUser(login.email);
+exports.getLogin = async (login) => {
+  try {
+    const response = await accountClient.getUserLogin(login.userId);
 
-    if (response){
-        const userEmail = response.email;
-        const userProfile = response.profile;
+    if (await hashService.comparePassword(login.password, response.password)) {
+      const userId = response.id;
+      const profileId = response.profile.id;
 
-        const jwtPayload = { userEmail , userProfile };
+      const jwtPayload = { userEmail: userId, profileId };
 
-        const jwtToken = jwtService.createJwtToken(jwtPayload);
-        
-        return { 
-                auth: true,
-                token: jwtToken
-            };
+      const jwtToken = jwtService.createJwtToken(jwtPayload);
+
+      return {
+        auth: true,
+        token: jwtToken,
+      };
+    } else {
+      throw Error("invalid_password");
     }
-    
-    throw Error("Error during getting login");
-}
+  } catch (err) {
+    throw err;
+  }
+};
 
 exports.createLogin = async (login, next) => {
+  hashService.hashingPassword(login.password, function (hashedPassword) {
+    if (!hashedPassword) {
+      throw Error("Error during hash password");
+    }
 
-    hashService.hashingPassword(login.password, function (hashedPassword) {
-        if (!hashedPassword) {
-            throw Error("Error during hash password");
-        }
-        
-        let loginHashed = {
-            email: login.login,
-            password: hashedPassword
-        }
+    let loginHashed = {
+      email: login.login,
+      password: hashedPassword,
+    };
 
-        const response = accountClient.createUserLogin(loginHashed);
-        
-        if(response){
-            const userEmail = response.email;
-            const userProfile = response.profile;
+    const response = accountClient.createUserLogin(loginHashed);
 
-            const jwtPayload = { userEmail , userProfile };
+    if (response) {
+      const userEmail = response.email;
+      const userProfile = response.profile;
 
-            const jwtToken = jwtService.createJwtToken(jwtPayload);
-            
-            return next({ 
-                    auth: true,
-                    token: jwtToken
-                });
-        }
+      const jwtPayload = { userEmail, userProfile };
 
-            
-        throw Error("Error during creating login");
-    });
-}
+      const jwtToken = jwtService.createJwtToken(jwtPayload);
+
+      return next({
+        auth: true,
+        token: jwtToken,
+      });
+    }
+
+    throw Error("Error during creating login");
+  });
+};
 
 //TODO
 exports.checkToken = async (login) => {
-    //TODO
+  //TODO
 
-    //Buscar userPass
-    let user = client.getUserPassword;
+  //Buscar userPass
+  let user = client.getUserPassword;
 
-    return { 
-        email: "email",
-        jwtToken: "token",
-    };
-}
+  return {
+    email: "email",
+    jwtToken: "token",
+  };
+};
