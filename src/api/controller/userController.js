@@ -128,9 +128,9 @@ exports.createChild = (req, res) => {
 
     const response = service.createChild(token, req.body, req.params.id);
 
-    return res.status(200).json(response);
+    return res.status(200).json(response); //TODO fix response
 
-  } catch (err) {
+  } catch (err) { //TODO fix response error
     if (err.name === "JsonWebTokenError") {
       return res.status(401).json({ auth: false, message: "Invalid token." });
     }
