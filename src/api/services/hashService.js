@@ -11,8 +11,6 @@ exports.hashingPassword = function (psw, next) {
 };
 
 exports.comparePassword = function (pswReceived, pswSaved) {
-  console.log(pswReceived);
-  console.log(pswSaved);
   return new Promise((resolve, reject) => {
     bcrypt.compare(pswReceived, pswSaved, function (err, result) {
       if (err) {
