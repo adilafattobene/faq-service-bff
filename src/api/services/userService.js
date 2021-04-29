@@ -6,8 +6,24 @@ exports.getUser = async (token, userId) => {
   try {
     const jwtResponse = await jwtService.verifyToken(token);
 
-    console.log(jwtResponse)
     const res = await accountClient.getUser(userId);
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.getUsersById = async (token, userId) => {
+  try {
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    console.log(jwtResponse)
+    if (jwtResponse.userId != userId) {
+      throw Error("not_authorized");
+    }
+
+    const res = await accountClient.getUsersById(userId);
+
     return res;
   } catch (err) {
     throw err;

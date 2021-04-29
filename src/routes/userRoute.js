@@ -1,6 +1,7 @@
 const controller = require("../api/controller/userController");
 
 module.exports = app => {
-    app.get("/users/:id", controller.getUser);
-    app.post("/users", controller.createUser);
+    app.get("/user/:id", controller.getUser);
+    app.get("/user/:id/users", controller.getUsersById);
+    app.post("/users", controller.createUser);    
 };

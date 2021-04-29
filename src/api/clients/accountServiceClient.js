@@ -10,6 +10,25 @@ exports.getUser = async function (userId) {
   }
 };
 
+exports.getUsersById = async function (userId) {
+  try {
+    const res = await axios.get(
+      "http://localhost:8080/user/" + userId + "/users"
+    );
+    return res.data.map(function (user) {
+      return {
+        id: user.id,
+        name: user.name,
+        userName: user.login.userName,
+        profile: user.login.profile.description,
+      };
+    });
+
+  } catch (error) {
+    throw new Error("not_found");
+  }
+};
+
 exports.getUserLogin = async function (userId) {
   try {
     const res = await axios.get("http://localhost:8080/login/user/" + userId);
