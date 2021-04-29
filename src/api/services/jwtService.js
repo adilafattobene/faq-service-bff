@@ -9,7 +9,7 @@ exports.createJwtToken = (payload) => {
   return token;
 };
 
-exports.verifyToken = (token, next) => {
+exports.verifyToken = (token) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
       if (err) {
