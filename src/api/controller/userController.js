@@ -115,6 +115,50 @@ exports.createUser = (req, res, next) => {
   }
 };
 
+exports.createChild = (req, res) => {
+  const token = req.headers["x-access-token"];
+  if (!token)
+    return res.status(401).json({ auth: false, message: "No token provided." });
+
+
+  try {
+    service.createUser(token, req.body, function (response) {
+      return res.status(201).json(response);
+    });
+
+    const response = service.createChild(token, req.body, req.params.id);
+
+    return res.status(200).json(response);
+
+  } catch (err) {
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ auth: false, message: "Invalid token." });
+    }
+
+    if (err.message === "Unauthorized") {
+      return res.status(401).json({ auth: false, message: "Unauthorized." });
+    }
+
+    if (err.message === "MissingProfileError") {
+      return res.status(401).json({
+        auth: false,
+        message: "Missing profile to create a new user.",
+      });
+    }
+
+    if (err.message === "NotPermitedError") {
+      return res
+        .status(403)
+        .json({ auth: false, message: "Unauthorized to create a new user." });
+    }
+
+    console.log(err);
+
+    return res.status(500).send("Erro Requisição createUser " + err);
+  }
+};
+
+
 exports.changeUser = (req, res, next) => {
   //TODO
   //receber a informação e passar para o service account

@@ -49,7 +49,30 @@ exports.getUserPassword = (userEmail) => {
   return resp;
 };
 
-exports.createUser = (user) => {
+exports.createUser = async function (userId, user) {
+    try {
+      const userToClient = {
+        "name": user.name,
+        "company": {
+            "id": user.companyId
+        },
+        "login": {
+            "password": user.password,
+            "userName": user.userName,
+            "profile": {
+                "id": user.profileId
+            }
+        }
+    }
+
+      const res = await axios.post("http://localhost:8080/user/" + userId, userToClient);
+  
+      return res.data;
+    } catch (error) {
+      throw new Error("not_found");
+    }
+
+
   //TODO POST
   let resp = {
     userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",

@@ -17,7 +17,7 @@ exports.getUsersById = async (token, userId) => {
   try {
     const jwtResponse = await jwtService.verifyToken(token);
 
-    console.log(jwtResponse)
+    console.log(jwtResponse);
     if (jwtResponse.userId != userId) {
       throw Error("not_authorized");
     }
@@ -62,12 +62,43 @@ exports.createUser = (token, user, next) => {
   }
 };
 
+exports.createChild = async (token, user, userId) => {
+  let newerUser = { ...user };
+
+  try {
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    if (jwtResponse.userId != userId) {
+      throw Error("not_authorized_aqui");
+    }
+
+    if (!hasPermissionToCreateNewProfile(jwtResponse.profileId)) {
+      throw Error("not_authorized_ooooo");
+    }
+
+    if (!isNewerUserProfileValid(user.profileId)) {
+      throw Error("invalid_profile");
+    }
+
+    const passHashed = await hashService.hashingPasswordAsync(newerUser.password);
+
+    const userCreated = accountClient.createUser(
+      userId,
+      copyUserWIthPasswordHashed(passHashed, user)
+    );
+
+    return userCreated;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const isNewerUserProfileValid = (newerUserProfile) => {
   if (!newerUserProfile) {
     throw Error("MissingProfileError");
   }
 
-  if (newerUserProfile != "OWNER") {
+  if (newerUserProfile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
     return true;
   }
 
@@ -75,7 +106,9 @@ const isNewerUserProfileValid = (newerUserProfile) => {
 };
 
 const hasPermissionToCreateNewProfile = (profile) => {
-  if (profile != "OWNER") {
+
+  if (profile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
+    console.log("profile")
     throw Error("NotPermitedError");
   }
 
