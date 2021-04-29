@@ -6,6 +6,7 @@ exports.getUser = async (token, userId) => {
   try {
     const jwtResponse = await jwtService.verifyToken(token);
 
+    console.log(jwtResponse)
     const res = await accountClient.getUser(userId);
     return res;
   } catch (err) {
