@@ -71,17 +71,6 @@ exports.createUser = async function (userId, user) {
     } catch (error) {
       throw new Error("not_found");
     }
-
-
-  //TODO POST
-  let resp = {
-    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
-    email: "teste@teste.com.br",
-    profile: user.profile,
-    name: "Usuário Teste",
-  };
-
-  return resp;
 };
 
 exports.createUserLogin = (user) => {
