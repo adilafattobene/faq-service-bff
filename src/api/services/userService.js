@@ -30,33 +30,15 @@ exports.getUsersById = async (token, userId) => {
   }
 };
 
-exports.createUser = (token, user, next) => {
-  let newerUser = { ...user };
-
+exports.createUser = async (user) => {
   try {
-    jwtService.verifyToken(token, function (response) {
-      if (
-        hasPermissionToCreateNewProfile(response.userProfile) &&
-        isNewerUserProfileValid(user.profile)
-      ) {
-        hashService.hashingPassword(
-          newerUser.password,
-          function (hashedPassword) {
-            if (!hashedPassword) {
-              throw Error("Error during hash password");
-            }
+    const passHashed = await hashService.hashingPasswordAsync(user.password);
 
-            const userCreated = accountClient.createUser(
-              copyUserWIthPasswordHashed(hashedPassword, user)
-            );
+    const userCreated = await accountClient.createUser(
+      copyUserWIthPasswordHashed(passHashed, user)
+    );
 
-            next(userCreated);
-          }
-        );
-      } else {
-        throw Error("Unauthorized");
-      }
-    });
+    return userCreated;
   } catch (err) {
     throw err;
   }
@@ -80,7 +62,7 @@ exports.createChild = async (token, user, userId) => {
 
     const passHashed = await hashService.hashingPasswordAsync(user.password);
 
-    const userCreated = await accountClient.createUser(
+    const userCreated = await accountClient.createUserChild(
       userId,
       copyUserWIthPasswordHashed(passHashed, user)
     );

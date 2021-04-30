@@ -23,7 +23,6 @@ exports.getUsersById = async function (userId) {
         profile: user.login.profile.description,
       };
     });
-
   } catch (error) {
     throw new Error("not_found");
   }
@@ -49,28 +48,56 @@ exports.getUserPassword = (userEmail) => {
   return resp;
 };
 
-exports.createUser = async function (userId, user) {
-    try {
-      const userToClient = {
-        "name": user.name,
-        "company": {
-            "id": user.companyId
+exports.createUserChild = async function (userId, user) {
+  try {
+    const userToClient = {
+      name: user.name,
+      company: {
+        id: user.companyId,
+      },
+      login: {
+        password: user.password,
+        userName: user.userName,
+        profile: {
+          id: user.profileId,
         },
-        "login": {
-            "password": user.password,
-            "userName": user.userName,
-            "profile": {
-                "id": user.profileId
-            }
-        }
+      },
+    };
+
+    const res = await axios.post(
+      "http://localhost:8080/user/" + userId,
+      userToClient
+    );
+
+    return res.data;
+  } catch (error) {
+    throw new Error("not_found");
+  }
+};
+
+exports.createUser = async function (user) {
+  try {
+    const userToClient = {
+      name: user.name,
+      company: {
+        name: user.companyName,
+      },
+      login: {
+        password: user.password,
+        userName: user.userName,
+      },
+    };
+
+    const res = await axios.post("http://localhost:8080/user", userToClient);
+
+    return res.data;
+  } catch (error) {
+    if(error.response.data.error === "conflict_error"){
+      throw new Error("conflict_error");
     }
 
-      const res = await axios.post("http://localhost:8080/user/" + userId, userToClient);
-  
-      return res.data;
-    } catch (error) {
-      throw new Error("not_found");
-    }
+    throw new Error(error);
+  }
 };
 
 exports.createUserLogin = (user) => {

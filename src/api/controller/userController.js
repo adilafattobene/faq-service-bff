@@ -1,5 +1,6 @@
 const client = require("../clients/accountServiceClient");
 const service = require("../services/userService");
+const jwtService = require("../services/jwtService");
 
 exports.getUser = async (req, res) => {
   const token = req.headers["x-access-token"];
@@ -78,39 +79,22 @@ exports.getUsersById = async (req, res) => {
   }
 };
 
-exports.createUser = (req, res, next) => {
+exports.createUser = async (req, res) => {
   const token = req.headers["x-access-token"];
-  if (!token)
-    return res.status(401).json({ auth: false, message: "No token provided." });
+  if (token)
+    return res.status(400).json({ auth: false, message: "A token was provided but it is not required." });
 
   try {
-    service.createUser(token, req.body, function (response) {
-      return res.status(201).json(response);
-    });
+    const response = await service.createUser(req.body);
+
+    const jwtToken = jwtService.createJwtToken(response);
+
+    return res.status(201).json({token: jwtToken });
+
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ auth: false, message: "Invalid token." });
+    if (err.message === "conflict_error") {
+      return res.status(409).json({ message: "Conflicted user." });
     }
-
-    if (err.message === "Unauthorized") {
-      return res.status(401).json({ auth: false, message: "Unauthorized." });
-    }
-
-    if (err.message === "MissingProfileError") {
-      return res.status(401).json({
-        auth: false,
-        message: "Missing profile to create a new user.",
-      });
-    }
-
-    if (err.message === "NotPermitedError") {
-      return res
-        .status(403)
-        .json({ auth: false, message: "Unauthorized to create a new user." });
-    }
-
-    console.log(err);
-
     return res.status(500).send("Erro Requisição createUser " + err);
   }
 };
