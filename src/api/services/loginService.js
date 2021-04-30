@@ -25,16 +25,3 @@ exports.getLogin = async (login) => {
     throw err;
   }
 };
-
-//TODO
-exports.checkToken = async (login) => {
-  //TODO
-
-  //Buscar userPass
-  let user = client.getUserPassword;
-
-  return {
-    email: "email",
-    jwtToken: "token",
-  };
-};
