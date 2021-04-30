@@ -17,7 +17,6 @@ exports.getUsersById = async (token, userId) => {
   try {
     const jwtResponse = await jwtService.verifyToken(token);
 
-    console.log(jwtResponse);
     if (jwtResponse.userId != userId) {
       throw Error("not_authorized");
     }
@@ -88,7 +87,6 @@ const isNewerUserProfileValid = (newerUserProfile) => {
 const hasPermissionToCreateNewProfile = (profile) => {
 
   if (profile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
-    console.log("profile")
     throw Error("NotPermitedError");
   }
 
