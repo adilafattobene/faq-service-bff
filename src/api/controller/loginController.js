@@ -14,16 +14,6 @@ exports.getLogin = async (req, res) => {
   }
 };
 
-exports.createLogin = async (req, res, next) => {
-  try {
-    loginService.createLogin(req.body, function (response) {
-      return res.status(201).json(response);
-    });
-  } catch (err) {
-    return res.status(500).send("Erro createLogin");
-  }
-};
-
 exports.checkToken = (req, res, next) => {
   try {
     const response = loginService.checkToken(req.body);
