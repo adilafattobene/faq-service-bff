@@ -63,26 +63,24 @@ exports.createUser = (token, user, next) => {
 };
 
 exports.createChild = async (token, user, userId) => {
-  let newerUser = { ...user };
-
   try {
     const jwtResponse = await jwtService.verifyToken(token);
 
     if (jwtResponse.userId != userId) {
-      throw Error("not_authorized_aqui");
+      throw Error("unauthorized_token");
     }
 
     if (!hasPermissionToCreateNewProfile(jwtResponse.profileId)) {
-      throw Error("not_authorized_ooooo");
+      throw Error("unauthorized_profile");
     }
 
     if (!isNewerUserProfileValid(user.profileId)) {
       throw Error("invalid_profile");
     }
 
-    const passHashed = await hashService.hashingPasswordAsync(newerUser.password);
+    const passHashed = await hashService.hashingPasswordAsync(user.password);
 
-    const userCreated = accountClient.createUser(
+    const userCreated = await accountClient.createUser(
       userId,
       copyUserWIthPasswordHashed(passHashed, user)
     );

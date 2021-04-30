@@ -115,49 +115,57 @@ exports.createUser = (req, res, next) => {
   }
 };
 
-exports.createChild = (req, res) => {
+exports.createChild = async (req, res) => {
   const token = req.headers["x-access-token"];
   if (!token)
     return res.status(401).json({ auth: false, message: "No token provided." });
 
-
   try {
-    service.createUser(token, req.body, function (response) {
-      return res.status(201).json(response);
-    });
-
-    const response = service.createChild(token, req.body, req.params.id);
+    const response = await service.createChild(token, req.body, req.params.id);
 
     return res.status(200).json(response); //TODO fix response
+  } catch (err) {
 
-  } catch (err) { //TODO fix response error
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Expired token." });
+    }
+
     if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ auth: false, message: "Invalid token." });
+      switch (err.message) {
+        case "invalid token":
+        case "jwt malformed":
+          return res.status(401).json({ message: "Invalid token." });
+        default:
+          return res.status(500).json({
+            message: "Erro durante validação do token na requisição getUser.",
+          });
+      }
     }
 
-    if (err.message === "Unauthorized") {
-      return res.status(401).json({ auth: false, message: "Unauthorized." });
-    }
-
-    if (err.message === "MissingProfileError") {
+    if (err.message === "invalid_profile") {
       return res.status(401).json({
         auth: false,
         message: "Missing profile to create a new user.",
       });
     }
 
-    if (err.message === "NotPermitedError") {
-      return res
-        .status(403)
-        .json({ auth: false, message: "Unauthorized to create a new user." });
+    if (err.message === "unauthorized_profile") {
+      return res.status(401).json({
+        auth: false,
+        message: "Missing profile to create a new user.",
+      });
     }
 
-    console.log(err);
+    if (err.message === "unauthorized_token") {
+      return res.status(401).json({
+        auth: false,
+        message: "Missing profile to create a new user.",
+      });
+    }
 
     return res.status(500).send("Erro Requisição createUser " + err);
   }
 };
-
 
 exports.changeUser = (req, res, next) => {
   //TODO
