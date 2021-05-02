@@ -1,52 +1,45 @@
 const cmsServiceClient = require("../clients/cmsServiceClient");
-const jwtService = require ("../services/jwtService");
+const jwtService = require("../services/jwtService");
+const userService = require("../services/userService");
 
-exports.getFaq = ( token, next ) => {
-    
-    try{
-        if(token){
-            jwtService.verifyToken( token, function( response ) {
+exports.getFaq = async (token) => {
+  try {
+    if (!token) {
+      let faq = await cmsServiceClient.getFaq("public");
 
-                let faq = cmsServiceClient.getFaq( response.profile );
-    
-                if( faq ) {
-                    return next( faq );
-                } else {
-                    throw Error( "NotFound" );
-                }
-            });
-        } else {
-            let faq = cmsServiceClient.getFaq( "DEFAULT" );
-            
-            return next( faq );
-        }
-        
-    }catch(err){
-        throw err;
+      return faq;
     }
-}
 
-exports.getFaqBySlug = ( token, slug, next ) => {
-    
-    try{
-        if(token){
-            jwtService.verifyToken( token, function( response ) {
+    const jwtResponse = await jwtService.verifyToken(token);
 
-                let faq = cmsServiceClient.getFaqBySlug( response.profile, slug );
-    
-                if( faq ) {
-                    return next( faq );
-                } else {
-                    throw Error( "NotFound" );
-                }
-            });
+    const profile = await userService.getProfile(jwtResponse.profileId);
+
+    let faq = await cmsServiceClient.getFaq(profile.description);
+
+    return faq;
+  } catch (err) {
+    throw err;
+  }
+};
+
+exports.getFaqBySlug = (token, slug, next) => {
+  try {
+    if (token) {
+      jwtService.verifyToken(token, function (response) {
+        let faq = cmsServiceClient.getFaqBySlug(response.profile, slug);
+
+        if (faq) {
+          return next(faq);
         } else {
-            let faq = cmsServiceClient.getFaqBySlug( "DEFAULT", slug );
-            
-            return next( faq );
+          throw Error("NotFound");
         }
-        
-    }catch(err){
-        throw err;
+      });
+    } else {
+      let faq = cmsServiceClient.getFaqBySlug("DEFAULT", slug);
+
+      return next(faq);
     }
-}
+  } catch (err) {
+    throw err;
+  }
+};
