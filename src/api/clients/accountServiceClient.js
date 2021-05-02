@@ -121,3 +121,18 @@ exports.changeUser = (user, userId) => {
 
   return resp;
 };
+
+exports.getProfile = async (profileId) => {
+  try{
+    const res = await axios.get("http://localhost:8080/profile/" + profileId);
+
+    return res.data;
+  } catch (error) {
+    if(error.response.data.error === "resource_not_found_error"){
+      throw new Error("resource_not_found_error");
+    }
+
+    throw new Error(error);
+  }
+};
+

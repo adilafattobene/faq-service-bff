@@ -100,3 +100,14 @@ const copyUserWIthPasswordHashed = (passwordHashed, user) => {
 
   return newerUserWithPasswordHashed;
 };
+
+exports.getProfile = async (profileId) => {
+
+  try{
+    let profile = await accountClient.getProfile(profileId);
+
+    return profile;
+  }catch(error){
+    return error;
+  }
+};
