@@ -38,16 +38,6 @@ exports.getUserLogin = async function (userId) {
   }
 };
 
-exports.getUserPassword = (userEmail) => {
-  //TODO GET
-  let resp = {
-    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
-    password: "$2y$15$EAY2oU/b21m84rEDJ8ql7.BlDYdh23A5qQX3QUkDiWw40Y5RTyeXq ",
-  };
-
-  return resp;
-};
-
 exports.createUserChild = async function (userId, user) {
   try {
     const userToClient = {
@@ -92,23 +82,12 @@ exports.createUser = async function (user) {
 
     return res.data;
   } catch (error) {
-    if(error.response.data.error === "conflict_error"){
+    if (error.response.data.error === "conflict_error") {
       throw new Error("conflict_error");
     }
 
     throw new Error(error);
   }
-};
-
-exports.createUserLogin = (user) => {
-  //TODO POST
-  let resp = {
-    userId: "c9ac28ac-dad7-42c5-b062-4be9428453db",
-    email: "teste@teste.com.br",
-    profile: "OWNER",
-  };
-
-  return resp;
 };
 
 exports.changeUser = (user, userId) => {
@@ -123,12 +102,12 @@ exports.changeUser = (user, userId) => {
 };
 
 exports.getProfile = async (profileId) => {
-  try{
+  try {
     const res = await axios.get("http://localhost:8080/profile/" + profileId);
 
     return res.data;
   } catch (error) {
-    if(error.response.data.error === "resource_not_found_error"){
+    if (error.response.data.error === "resource_not_found_error") {
       throw new Error("resource_not_found_error");
     }
 
@@ -137,16 +116,15 @@ exports.getProfile = async (profileId) => {
 };
 
 exports.getProfiles = async () => {
-  try{
+  try {
     const res = await axios.get("http://localhost:8080/profile");
 
     return res.data;
   } catch (error) {
-    if(error.response.data.error === "resource_not_found_error"){
+    if (error.response.data.error === "resource_not_found_error") {
       throw new Error("resource_not_found_error");
     }
 
     throw new Error(error);
   }
 };
-

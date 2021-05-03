@@ -12,7 +12,6 @@ exports.getUser = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (err) {
-    console.log(err);
     if (err.message === "not_found") {
       return res.status(404).json({ message: "User not found." });
     }
@@ -48,7 +47,6 @@ exports.getUsersById = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (err) {
-    console.log(err);
     if (err.message === "not_found") {
       return res.status(404).json({ message: "User not found." });
     }
@@ -82,15 +80,17 @@ exports.getUsersById = async (req, res) => {
 exports.createUser = async (req, res) => {
   const token = req.headers["x-access-token"];
   if (token)
-    return res.status(400).json({ auth: false, message: "A token was provided but it is not required." });
+    return res.status(400).json({
+      auth: false,
+      message: "A token was provided but it is not required.",
+    });
 
   try {
     const response = await service.createUser(req.body);
 
     const jwtToken = jwtService.createJwtToken(response);
 
-    return res.status(201).json({token: jwtToken });
-
+    return res.status(201).json({ token: jwtToken });
   } catch (err) {
     if (err.message === "conflict_error") {
       return res.status(409).json({ message: "Conflicted user." });
@@ -109,7 +109,6 @@ exports.createChild = async (req, res) => {
 
     return res.status(200).json(response); //TODO fix response
   } catch (err) {
-
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Expired token." });
     }

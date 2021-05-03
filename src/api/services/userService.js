@@ -85,7 +85,6 @@ const isNewerUserProfileValid = (newerUserProfile) => {
 };
 
 const hasPermissionToCreateNewProfile = (profile) => {
-
   if (profile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
     throw Error("NotPermitedError");
   }
@@ -102,12 +101,11 @@ const copyUserWIthPasswordHashed = (passwordHashed, user) => {
 };
 
 exports.getProfile = async (profileId) => {
-
-  try{
+  try {
     let profile = await accountClient.getProfile(profileId);
 
     return profile;
-  }catch(error){
+  } catch (error) {
     return error;
   }
 };
