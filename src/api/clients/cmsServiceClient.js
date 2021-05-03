@@ -5,6 +5,7 @@ exports.getFaq = async function (profile) {
     const res = await axios.get(
       "http://localhost:1337/faqs?type=" + profile.toLowerCase()
     );
+
     return res.data;
   } catch (error) {
     throw new Error(error);
