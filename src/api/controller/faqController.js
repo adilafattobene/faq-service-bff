@@ -17,13 +17,13 @@ exports.getFaq = async (req, res) => {
   }
 };
 
-exports.getFaqBySlug = (req, res, next) => {
+exports.getFaqBySlug = async (req, res) => {
   const token = req.headers["x-access-token"];
 
   try {
-    service.getFaqBySlug(token, req.params.slug, function (response) {
-      return res.status(200).json(response);
-    });
+    const response = await service.getFaqBySlug(token, req.params.slug);
+
+    return res.status(200).json(response);
   } catch (err) {
     if (err.message === "NotFound") {
       return res.status(404).json({ message: "FAQ not found." });

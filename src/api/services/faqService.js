@@ -22,23 +22,21 @@ exports.getFaq = async (token) => {
   }
 };
 
-exports.getFaqBySlug = (token, slug, next) => {
+exports.getFaqBySlug = async (token, slug) => {
   try {
-    if (token) {
-      jwtService.verifyToken(token, function (response) {
-        let faq = cmsServiceClient.getFaqBySlug(response.profile, slug);
+    if (!token) {
+      let faq = await cmsServiceClient.getFaqBySlug("public", slug);
 
-        if (faq) {
-          return next(faq);
-        } else {
-          throw Error("NotFound");
-        }
-      });
-    } else {
-      let faq = cmsServiceClient.getFaqBySlug("DEFAULT", slug);
-
-      return next(faq);
+      return faq;
     }
+
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    const profile = await userService.getProfile(jwtResponse.profileId);
+
+    let faq = await cmsServiceClient.getFaqBySlug(profile.description, slug);
+
+    return faq;
   } catch (err) {
     throw err;
   }
