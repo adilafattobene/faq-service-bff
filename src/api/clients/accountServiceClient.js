@@ -136,3 +136,17 @@ exports.getProfile = async (profileId) => {
   }
 };
 
+exports.getProfiles = async () => {
+  try{
+    const res = await axios.get("http://localhost:8080/profile");
+
+    return res.data;
+  } catch (error) {
+    if(error.response.data.error === "resource_not_found_error"){
+      throw new Error("resource_not_found_error");
+    }
+
+    throw new Error(error);
+  }
+};
+
