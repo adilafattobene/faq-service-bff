@@ -13,7 +13,7 @@ exports.getFaqs = async (req, res) => {
       return res.status(404).json({ message: "FAQ not found." });
     }
 
-    return res.status(500).send("Erro Requisição getUser " + err);
+    return res.status(500).json({ message: "Something is wrong - FAQ not found." });
   }
 };
 
@@ -29,6 +29,6 @@ exports.getFaqBySlug = async (req, res) => {
       return res.status(404).json({ message: "FAQ not found." });
     }
 
-    return res.status(500).send("Erro Requisição getUser " + err);
+    return res.status(500).json("Erro Requisição getUser " + err);
   }
 };

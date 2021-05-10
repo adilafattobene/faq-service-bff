@@ -32,7 +32,7 @@ exports.getUser = async (req, res) => {
       }
     }
 
-    return res.status(500).send("Erro Requisição getUser " + err);
+    return res.status(500).json("Erro Requisição getUser " + err);
   }
 };
 
@@ -73,7 +73,7 @@ exports.getUsersById = async (req, res) => {
       }
     }
 
-    return res.status(500).send("Erro Requisição getUser " + err);
+    return res.status(500).json("Erro Requisição getUser " + err);
   }
 };
 
@@ -95,7 +95,7 @@ exports.createUser = async (req, res) => {
     if (err.message === "conflict_error") {
       return res.status(409).json({ message: "Conflicted user." });
     }
-    return res.status(500).send("Erro Requisição createUser " + err);
+    return res.status(500).json("Erro Requisição createUser " + err);
   }
 };
 
