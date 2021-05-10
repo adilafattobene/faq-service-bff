@@ -30,7 +30,7 @@ describe("getFaq unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn();
 
-    const a = await controller.getFaqs(
+    await controller.getFaqs(
       { headers: { "x-access-token": "blabla" } },
       res
     );
@@ -47,7 +47,7 @@ describe("getFaq unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
 
-    const a = await controller.getFaqs(
+    await controller.getFaqs(
       { headers: { "x-access-token": "blabla" } },
       res
     );
@@ -64,7 +64,7 @@ describe("getFaq unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
 
-    const a = await controller.getFaqs(
+    await controller.getFaqs(
       { headers: { "x-access-token": "blabla" } },
       res
     );
@@ -102,7 +102,7 @@ describe("getFaqBySlug unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn();
 
-    const a = await controller.getFaqBySlug(
+    await controller.getFaqBySlug(
       {
         headers: { "x-access-token": "blabla" },
         params: { slug: "como-se-cadastrar" },
@@ -124,7 +124,7 @@ describe("getFaqBySlug unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
 
-    const a = await controller.getFaqBySlug(
+    await controller.getFaqBySlug(
       {
         headers: { "x-access-token": "blabla" },
         params: { slug: "como-se-cadastrar" },
@@ -146,7 +146,7 @@ describe("getFaqBySlug unit test", () => {
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
 
-    const a = await controller.getFaqBySlug(
+    await controller.getFaqBySlug(
       {
         headers: { "x-access-token": "blabla" },
         params: { slug: "como-se-cadastrar" },
