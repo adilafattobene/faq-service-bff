@@ -10,6 +10,6 @@ exports.getLogin = async (req, res) => {
       return res.status(403).json({ message: "Invalid Password." });
     }
 
-    return res.status(500).json("Erro getLogin " + err);
+    return res.status(500).json({ message: "Something is wrong - getLogin." });
   }
 };
