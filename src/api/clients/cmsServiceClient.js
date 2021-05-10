@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-exports.getFaq = async function (profile) {
+exports.getFaqs = async function (profile) {
   try {
     const res = await axios.get(
       "http://localhost:1337/faqs?type=" + profile.toLowerCase()

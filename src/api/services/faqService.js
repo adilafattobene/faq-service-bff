@@ -2,10 +2,10 @@ const cmsServiceClient = require("../clients/cmsServiceClient");
 const jwtService = require("../services/jwtService");
 const userService = require("../services/userService");
 
-exports.getFaq = async (token) => {
+exports.getFaqs = async (token) => {
   try {
     if (!token) {
-      let faq = await cmsServiceClient.getFaq("public");
+      let faq = await cmsServiceClient.getFaqs("public");
 
       return faq;
     }
@@ -14,7 +14,7 @@ exports.getFaq = async (token) => {
 
     const profile = await userService.getProfile(jwtResponse.profileId);
 
-    let faq = await cmsServiceClient.getFaq(profile.description);
+    let faq = await cmsServiceClient.getFaqs(profile.description);
 
     return faq;
   } catch (err) {

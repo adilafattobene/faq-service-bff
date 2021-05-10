@@ -1,11 +1,11 @@
 const { compareSync } = require("bcrypt");
 const service = require("../services/faqService");
 
-exports.getFaq = async (req, res) => {
+exports.getFaqs = async (req, res) => {
   const token = req.headers["x-access-token"];
 
   try {
-    const response = await service.getFaq(token);
+    const response = await service.getFaqs(token);
 
     return res.status(200).json(response);
   } catch (err) {

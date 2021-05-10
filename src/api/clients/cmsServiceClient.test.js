@@ -33,7 +33,7 @@ describe("getFaqs unit tests", () => {
       faqs: faqs,
     });
 
-    const a = await client.getFaq("public");
+    const a = await client.getFaqs("public");
 
     expect(a.faqs).toEqual(faqs);
   });
@@ -43,7 +43,7 @@ describe("getFaqs unit tests", () => {
       .onGet("http://localhost:1337/faqs?type=public")
       .reply(400);
 
-      await expect(client.getFaq("public")).rejects.toThrow(Error);
+      await expect(client.getFaqs("public")).rejects.toThrow(Error);
   });
 });
 
