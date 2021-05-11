@@ -10,7 +10,7 @@ exports.getUser = async (req, res) => {
   try {
     const response = await service.getUser(token, req.params.id);
 
-    return res.status(200).json(response);
+    return res.status(201).json(response);
   } catch (err) {
     if (err.message === "not_found") {
       return res.status(404).json({ message: "User not found." });
@@ -101,7 +101,9 @@ exports.createUser = async (req, res) => {
     if (err.message === "conflict_error") {
       return res.status(409).json({ message: "Conflicted user." });
     }
-    return res.status(500).json({ message: "Something is wrong - createUser." });
+    return res
+      .status(500)
+      .json({ message: "Something is wrong - createUser." });
   }
 };
 
@@ -126,7 +128,8 @@ exports.createChild = async (req, res) => {
           return res.status(401).json({ message: "Invalid token." });
         default:
           return res.status(500).json({
-            message: "Erro durante validação do token na requisição createChild.",
+            message:
+              "Erro durante validação do token na requisição createChild.",
           });
       }
     }
@@ -152,7 +155,9 @@ exports.createChild = async (req, res) => {
       });
     }
 
-    return res.status(500).json({ message: "Something is wrong - createChild." });
+    return res
+      .status(500)
+      .json({ message: "Something is wrong - createChild." });
   }
 };
 
