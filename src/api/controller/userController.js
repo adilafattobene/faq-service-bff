@@ -10,7 +10,7 @@ exports.getUser = async (req, res) => {
   try {
     const response = await service.getUser(token, req.params.id);
 
-    return res.status(201).json(response);
+    return res.status(200).json(response);
   } catch (err) {
     if (err.message === "not_found") {
       return res.status(404).json({ message: "User not found." });
@@ -115,7 +115,7 @@ exports.createChild = async (req, res) => {
   try {
     const response = await service.createChild(token, req.body, req.params.id);
 
-    return res.status(200).json(response); //TODO fix response
+    return res.status(201).json(response);
   } catch (err) {
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Expired token." });
