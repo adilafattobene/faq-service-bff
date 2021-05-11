@@ -170,7 +170,7 @@ describe("getProfiles unit tests", () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      message: "Erro durante validação do token na requisição getUser.",
+      message: "Erro durante validação do token na requisição getProfiles.",
     });
   });
 
