@@ -101,7 +101,7 @@ exports.createUser = async (req, res) => {
     if (err.message === "conflict_error") {
       return res.status(409).json({ message: "Conflicted user." });
     }
-    return res.status(500).json("Erro Requisição createUser " + err);
+    return res.status(500).json({ message: "Something is wrong - createUser." });
   }
 };
 
