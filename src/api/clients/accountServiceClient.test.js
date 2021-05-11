@@ -11,18 +11,35 @@ describe("getUser unit test", () => {
   test("should return an user given an userId", async () => {
     const user = {
       id: "27bc9743-1923-4ade-b364-04a0805175c1",
-      name: "teste post ownerrrrrr bff",
-      company: {
-        id: "27bc9743-1923-4ade-b364-04a0805175c1",
-        name: "teste post ownerrrrrr bff",
+      name: "Name of test",
+      login: {
+        userName: "UserNameOfTest",
+        profile: {
+          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+          description: "OWNER",
+        },
       },
     };
 
-    //TODO
+    mock
+      .onGet("http://localhost:8080/user/27bc9743-1923-4ade-b364-04a0805175c1")
+      .reply(200, { user: user });
+
+    const response = await client.getUser(
+      "27bc9743-1923-4ade-b364-04a0805175c1"
+    );
+
+    expect(response.user).toEqual(user);
   });
 
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    mock
+      .onGet("http://localhost:8080/user/00000000-0000-0000-0000-000000000000")
+      .reply(400);
+
+    await expect(
+      client.getUser("00000000-0000-0000-0000-000000000000")
+    ).rejects.toThrow(Error);
   });
 });
 
@@ -30,64 +47,183 @@ describe("getUsersById unit test", () => {
   afterEach(() => mock.resetHandlers());
 
   test("should return an user list given an userId", async () => {
-    const users = [
+    const user = [
       {
-        id: "458c9743-1923-4ade-b364-04a0805458pi",
+        id: "27bc9743-1923-4ade-b364-04a0805175c1",
         name: "teste post ownerrrrrr bff",
-        company: {
-          id: "27bc9743-1923-4ade-b364-04a0805175c1",
-          name: "teste post ownerrrrrr bff",
+        login: {
+          userName: "teste post ownerrrrrr bff",
+          profile: {
+            id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+            description: "OWNER",
+          },
         },
       },
     ];
 
-    //TODO
+    mock
+      .onGet(
+        "http://localhost:8080/user/27bc9743-1923-4ade-b364-04a0805175c1/users"
+      )
+      .reply(200, user);
+
+    const response = await client.getUsersById(
+      "27bc9743-1923-4ade-b364-04a0805175c1"
+    );
+
+    const userResponse = [
+      {
+        id: user[0].id,
+        name: user[0].name,
+        userName: user[0].login.userName,
+        profile: user[0].login.profile.description,
+      },
+    ];
+
+    expect(response).toEqual(userResponse);
   });
 
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    mock
+      .onGet(
+        "http://localhost:8080/user/00000000-0000-0000-0000-000000000000/users"
+      )
+      .reply(400);
+
+    await expect(
+      client.getUsersById("00000000-0000-0000-0000-000000000000")
+    ).rejects.toThrow(Error);
+  });
+});
+
+describe("getUserLoginByUserName unit test", () => {
+  afterEach(() => mock.resetHandlers());
+
+  test("should return an user login given an userName", async () => {
+    const userLogin = {
+      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
+      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
+      userName: "UserNameofTest",
+      profile: {
+        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+        description: "OWNER",
+      },
+    };
+
+    mock
+      .onGet("http://localhost:8080/login/user?userName=UserNameofTest")
+      .reply(200, { userLogin: userLogin });
+
+    const response = await client.getUserLoginByUserName("UserNameofTest");
+
+    expect(response.userLogin).toEqual(userLogin);
+  });
+
+  test("should throw an error when accountService request fail", async () => {
+    mock
+      .onGet("http://localhost:8080/login/user?userName=InvalidUserNameofTest")
+      .reply(400);
+
+    await expect(
+      client.getUserLoginByUserName("InvalidUserNameofTest")
+    ).rejects.toThrow(Error);
   });
 });
 
 describe("createUserChild unit test", () => {
   afterEach(() => mock.resetHandlers());
-
-  test("should return an user when it receive a userBody and given a n userId", async () => {
+  //TODO: mudar a frase
+  test("should return an user when it receive a userBody and given an userId", async () => {
     const user = {
+      name: "Name of test",
+      companyName: "Companny name of test",
+      password: "UserPasswordOfTest",
+      userName: "UserNameOfTest",
+    };
+    const userResponse = {
       id: "27bc9743-1923-4ade-b364-04a0805175c1",
-      name: "teste post ownerrrrrr bff",
-      company: {
-        id: "27bc9743-1923-4ade-b364-04a0805175c1",
-        name: "teste post ownerrrrrr bff",
+      name: "Name Of Test",
+      login: {
+        userName: "UserNameofTest",
+        profile: {
+          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+          description: "OWNER",
+        },
       },
     };
 
-    //TODO
+    mock
+      .onPost("http://localhost:8080/user/27bc9743-1923-4ade-b364-04a0805175c1")
+      .reply(201, userResponse);
+
+    const response = await client.createUserChild(
+      "27bc9743-1923-4ade-b364-04a0805175c1",
+      user
+    );
+
+    expect(response).toEqual(userResponse);
   });
 
+  //TODO: mudar a frase
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    const user = {
+      name: "Name of test",
+      companyName: "Companny name of test",
+      password: "UserPasswordOfTest",
+      userName: "UserNameOfTest",
+    };
+
+    mock
+      .onPost("http://localhost:8080/user/00000000-0000-0000-0000-000000000000")
+      .reply(400);
+
+    await expect(
+      client.createUserChild("00000000-0000-0000-0000-000000000000", user)
+    ).rejects.toThrow(Error);
   });
 });
 
 describe("createUser unit test", () => {
   afterEach(() => mock.resetHandlers());
-
-  test("should return an user when it receive a userBody", async () => {
+  //TODO: mudar a frase
+  test("should return an user when it receive a userBody and given an userId", async () => {
     const user = {
+      name: "Name of test",
+      companyName: "Companny name of test",
+      password: "UserPasswordOfTest",
+      userName: "UserNameOfTest",
+    };
+    const userResponse = {
       id: "27bc9743-1923-4ade-b364-04a0805175c1",
-      name: "teste post ownerrrrrr bff",
-      company: {
-        id: "27bc9743-1923-4ade-b364-04a0805175c1",
-        name: "teste post ownerrrrrr bff",
+      name: "Name Of Test",
+      login: {
+        userName: "UserNameofTest",
+        profile: {
+          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+          description: "OWNER",
+        },
       },
     };
 
-    //TODO
+    mock.onPost("http://localhost:8080/user").reply(201, userResponse);
+
+    const response = await client.createUser(user);
+
+    expect(response).toEqual(userResponse);
   });
 
+  //TODO: verificar o error como deve ser feito
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    const user = {
+      name: "Name of test",
+      companyName: "Companny name of test",
+      password: "UserPasswordOfTest",
+      userName: "UserNameOfTest",
+    };
+
+    mock.onPost("http://localhost:8080/user").reply(400);
+
+    await expect(client.createUser(user)).rejects.toThrow(Error);
   });
 });
 
@@ -147,29 +283,6 @@ describe("getProfiles unit test", () => {
         description: "ADM",
       },
     ];
-
-    //TODO
-  });
-
-  test("should throw an error when accountService request fail", async () => {
-    //TODO
-  });
-});
-
-
-describe("getUserLoginByUserName unit test", () => {
-  afterEach(() => mock.resetHandlers());
-
-  test("should return an user login given an userName", async () => {
-    const userLogin = {
-      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
-      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
-      userName: "teste_criação_dsfdsaddf",
-      profile: {
-        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
-        description: "OWNER",
-      },
-    };
 
     //TODO
   });
