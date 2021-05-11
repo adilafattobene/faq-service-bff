@@ -79,7 +79,7 @@ exports.getUsersById = async (req, res) => {
       }
     }
 
-    return res.status(500).json("Erro Requisição getUser " + err);
+    return res.status(500).json({ message: "Something is wrong - getUsers." });
   }
 };
 
@@ -156,10 +156,10 @@ exports.createChild = async (req, res) => {
   }
 };
 
-exports.changeUser = (req, res, next) => {
-  //TODO
-  //receber a informação e passar para o service account
-  let userChanged = client.changeUser;
+// exports.changeUser = (req, res, next) => {
+//   //TODO
+//   //receber a informação e passar para o service account
+//   let userChanged = client.changeUser;
 
-  res.send("Requisição changeUser");
-};
+//   res.send("Requisição changeUser");
+// };
