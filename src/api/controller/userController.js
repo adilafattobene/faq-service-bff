@@ -16,6 +16,12 @@ exports.getUser = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
+    if (err.message === "not_authorized") {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to request this resource." });
+    }
+    
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Expired token." });
     }
