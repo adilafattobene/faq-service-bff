@@ -23,6 +23,10 @@ exports.getFaqs = async (token) => {
 };
 
 exports.getFaqBySlug = async (token, slug) => {
+  if (!slug) {
+    throw new Error("slug_required");
+  }
+
   try {
     if (!token) {
       let faq = await cmsServiceClient.getFaqBySlug("public", slug);
