@@ -49,28 +49,6 @@ describe("getUsersById unit test", () => {
   });
 });
 
-describe("getUserLogin unit test", () => {
-  afterEach(() => mock.resetHandlers());
-
-  test("should return an user login given an userId", async () => {
-    const userLogin = {
-      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
-      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
-      userName: "teste_criação_dsfdsaddf",
-      profile: {
-        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
-        description: "OWNER",
-      },
-    };
-
-    //TODO
-  });
-
-  test("should throw an error when accountService request fail", async () => {
-    //TODO
-  });
-});
-
 describe("createUserChild unit test", () => {
   afterEach(() => mock.resetHandlers());
 
@@ -169,6 +147,29 @@ describe("getProfiles unit test", () => {
         description: "ADM",
       },
     ];
+
+    //TODO
+  });
+
+  test("should throw an error when accountService request fail", async () => {
+    //TODO
+  });
+});
+
+
+describe("getUserLoginByUserName unit test", () => {
+  afterEach(() => mock.resetHandlers());
+
+  test("should return an user login given an userName", async () => {
+    const userLogin = {
+      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
+      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
+      userName: "teste_criação_dsfdsaddf",
+      profile: {
+        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+        description: "OWNER",
+      },
+    };
 
     //TODO
   });

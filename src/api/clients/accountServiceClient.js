@@ -28,9 +28,11 @@ exports.getUsersById = async function (userId) {
   }
 };
 
-exports.getUserLogin = async function (userId) {
+exports.getUserLoginByUserName = async function (userName) {
   try {
-    const res = await axios.get("http://localhost:8080/login/user/" + userId);
+    const res = await axios.get(
+      "http://localhost:8080/login/user?userName=" + userName
+    );
 
     return res.data;
   } catch (error) {

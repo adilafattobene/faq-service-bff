@@ -4,7 +4,7 @@ const accountClient = require("../clients/accountServiceClient");
 
 exports.getLogin = async (login) => {
   try {
-    const response = await accountClient.getUserLogin(login.userId);
+    const response = await accountClient.getUserLoginByUserName(login.userName);
 
     if (await hashService.comparePassword(login.password, response.password)) {
       const userId = login.userId;
