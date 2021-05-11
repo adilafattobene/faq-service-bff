@@ -126,7 +126,7 @@ exports.createChild = async (req, res) => {
           return res.status(401).json({ message: "Invalid token." });
         default:
           return res.status(500).json({
-            message: "Erro durante validação do token na requisição getUser.",
+            message: "Erro durante validação do token na requisição createChild.",
           });
       }
     }
@@ -141,18 +141,18 @@ exports.createChild = async (req, res) => {
     if (err.message === "unauthorized_profile") {
       return res.status(401).json({
         auth: false,
-        message: "Missing profile to create a new user.",
+        message: "Unauthorized profile to create a new user.",
       });
     }
 
     if (err.message === "unauthorized_token") {
       return res.status(401).json({
         auth: false,
-        message: "Missing profile to create a new user.",
+        message: "Unauthorized token to create a new user.",
       });
     }
 
-    return res.status(500).send("Erro Requisição createUser " + err);
+    return res.status(500).json({ message: "Something is wrong - createChild." });
   }
 };
 
