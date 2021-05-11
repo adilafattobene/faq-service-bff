@@ -9,7 +9,7 @@ exports.getProfiles = async (token) => {
       throw Error("not_authorized");
     }
 
-    const res = accountClient.getProfiles();
+    const res = await accountClient.getProfiles();
     return res;
   } catch (err) {
     throw err;
