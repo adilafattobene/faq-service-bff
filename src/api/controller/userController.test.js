@@ -1,4 +1,5 @@
 const service = require("../services/userService");
+const serviceJwt = require("../services/jwtService");
 const controller = require("./userController");
 
 describe("getUser unit tests", () => {
@@ -187,10 +188,12 @@ describe("getUser unit tests", () => {
 
 describe("getUsersById unit tests", () => {
   test("should return 200", async () => {
-    const users = [{
-      id: "asd",
-      name: "blabla",
-    }];
+    const users = [
+      {
+        id: "asd",
+        name: "blabla",
+      },
+    ];
 
     jest.spyOn(service, "getUsersById").mockResolvedValue(users);
 
@@ -227,7 +230,9 @@ describe("getUsersById unit tests", () => {
   });
 
   test("should return 404 when when user is not found", async () => {
-    jest.spyOn(service, "getUsersById").mockRejectedValue(new Error("not_found"));
+    jest
+      .spyOn(service, "getUsersById")
+      .mockRejectedValue(new Error("not_found"));
 
     const res = {};
     res.send = jest.fn().mockReturnValue(res);
@@ -350,7 +355,9 @@ describe("getUsersById unit tests", () => {
   });
 
   test("should return 500", async () => {
-    jest.spyOn(service, "getUsersById").mockRejectedValue(new Error("Other error"));
+    jest
+      .spyOn(service, "getUsersById")
+      .mockRejectedValue(new Error("Other error"));
 
     const res = {};
     res.send = jest.fn().mockReturnValue(res);
@@ -365,6 +372,121 @@ describe("getUsersById unit tests", () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       message: "Something is wrong - getUsers.",
+    });
+  });
+});
+
+describe("createUser unit tests", () => {
+  test("should return 201", async () => {
+    const user = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    jest.spyOn(service, "createUser").mockResolvedValue(user);
+
+    const token = "token145687IssoAe";
+
+    jest.spyOn(serviceJwt, "createJwtToken").mockReturnValue(token);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn();
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    await controller.createUser(
+      { headers: { "other-header": "olá_mundo" }, body: body },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ token: token });
+  });
+
+  test("should return 400 when it receive a token", async () => {
+    const users = [
+      {
+        id: "asd",
+        name: "blabla",
+      },
+    ];
+
+    jest.spyOn(service, "createUser").mockResolvedValue(users);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn();
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    const a = await controller.createUser(
+      { headers: { "x-access-token": "blabla" }, body: body },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      auth: false,
+      message: "A token was provided but it is not required.",
+    });
+  });
+
+  test("should return 404 when when user is not found", async () => {
+    jest
+      .spyOn(service, "createUser")
+      .mockRejectedValue(new Error("conflict_error"));
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    await controller.createUser(
+      { headers: { "other-header": "olá_mundo" }, body: body },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({ message: "Conflicted user." });
+  });
+
+  test("should return 500", async () => {
+    jest
+      .spyOn(service, "createUser")
+      .mockRejectedValue(new Error("Other error"));
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    await controller.createUser(
+      { headers: { "other-header": "olá_mundo" }, body: body },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Something is wrong - createUser.",
     });
   });
 });
