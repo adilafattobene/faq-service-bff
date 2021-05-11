@@ -490,3 +490,272 @@ describe("createUser unit tests", () => {
     });
   });
 });
+
+describe("createChild unit tests", () => {
+  test("should return 201", async () => {
+    const user = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    jest.spyOn(service, "createChild").mockResolvedValue(user);
+
+    const token = "token145687IssoAe";
+
+    jest.spyOn(serviceJwt, "createJwtToken").mockReturnValue(token);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn();
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(user);
+  });
+
+  test("should return 401 when it does not receive token", async () => {
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+
+    await controller.createChild(
+      { headers: { "other-header": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      auth: false,
+      message: "No token provided.",
+    });
+  });
+
+  test("should return 401 when token is expired", async () => {
+    let error = new Error();
+    error.name = "TokenExpiredError";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Expired token." });
+  });
+
+  test("should return 401 when token is invalid", async () => {
+    let error = new Error();
+    error.name = "JsonWebTokenError";
+    error.message = "invalid token";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Invalid token." });
+  });
+
+  test("should return 401 when token is malformed", async () => {
+    let error = new Error();
+    error.name = "JsonWebTokenError";
+    error.message = "jwt malformed";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Invalid token." });
+  });
+
+  test("should return 401 when profile received is invalid", async () => {
+    let error = new Error();
+    error.message = "invalid_profile";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      auth: false,
+      message: "Missing profile to create a new user.",
+    });
+  });
+
+  test("should return 401 when profile received is invalid", async () => {
+    let error = new Error();
+    error.message = "unauthorized_profile";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      auth: false,
+      message: "Unauthorized profile to create a new user.",
+    });
+  });
+
+  test("should return 401 when profile received is invalid", async () => {
+    let error = new Error();
+    error.message = "unauthorized_token";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      auth: false,
+      message: "Unauthorized token to create a new user.",
+    });
+  });
+
+  test("should return 500 when occur a jwt error", async () => {
+    let error = new Error();
+    error.name = "JsonWebTokenError";
+    error.message = "Other jwt error";
+
+    jest.spyOn(service, "createChild").mockRejectedValue(error);
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "Erro durante validação do token na requisição createChild.",
+    });
+  });
+
+  test("should return 500", async () => {
+    jest
+      .spyOn(service, "createChild")
+      .mockRejectedValue(new Error("Other error"));
+
+    const res = {};
+    res.send = jest.fn().mockReturnValue(res);
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+
+    const body = {
+      id: "asd",
+      name: "blabla",
+    };
+    
+    await controller.createChild(
+      { headers: { "x-access-token": "blabla" }, body: body,  params: { id: "aaaaaa" } },
+      res
+    );
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: "Something is wrong - createChild." });
+  });
+});
