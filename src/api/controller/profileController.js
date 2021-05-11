@@ -31,7 +31,7 @@ exports.getProfiles = async (req, res) => {
           return res.status(401).json({ message: "Invalid token." });
         default:
           return res.status(500).json({
-            message: "Erro durante validação do token na requisição getUser.",
+            message: "Erro durante validação do token na requisição getProfiles.",
           });
       }
     }
