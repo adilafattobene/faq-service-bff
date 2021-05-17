@@ -110,6 +110,6 @@ exports.getProfile = async (profileId) => {
 
     return profile;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
