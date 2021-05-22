@@ -132,13 +132,16 @@ describe("getUserLoginByUserName unit test", () => {
 
 describe("createUserChild unit test", () => {
   afterEach(() => mock.resetHandlers());
-  //TODO: mudar a frase
-  test("should return an user when it receive a userBody and given an userId", async () => {
+  test("should create an user child when it receive a userBody and given an userId", async () => {
     const user = {
-      name: "Name of test",
-      companyName: "Companny name of test",
-      password: "UserPasswordOfTest",
-      userName: "UserNameOfTest",
+      name: "teste criação filho",
+      login: {
+        userName: "criacaoFilho",
+        password: "testeCriacaoFilho",
+        profile: {
+          id: "61cfce77-0e67-4a86-ba19-afe0c91eceb1",
+        },
+      },
     };
     const userResponse = {
       id: "27bc9743-1923-4ade-b364-04a0805175c1",
@@ -164,7 +167,6 @@ describe("createUserChild unit test", () => {
     expect(response).toEqual(userResponse);
   });
 
-  //TODO: mudar a frase
   test("should throw an error when accountService request fail", async () => {
     const user = {
       name: "Name of test",
@@ -185,14 +187,18 @@ describe("createUserChild unit test", () => {
 
 describe("createUser unit test", () => {
   afterEach(() => mock.resetHandlers());
-  //TODO: mudar a frase
-  test("should return an user when it receive a userBody and given an userId", async () => {
+  test("should create an user when it receive a userBody and given an userId", async () => {
     const user = {
       name: "Name of test",
-      companyName: "Companny name of test",
-      password: "UserPasswordOfTest",
-      userName: "UserNameOfTest",
+      login: {
+        userName: "UserNameOfTest",
+        password: "thisIsaGreatPassword",
+      },
+      company: {
+        name: "teste post ownerrrrrr bff",
+      },
     };
+
     const userResponse = {
       id: "27bc9743-1923-4ade-b364-04a0805175c1",
       name: "Name Of Test",
@@ -205,46 +211,9 @@ describe("createUser unit test", () => {
       },
     };
 
-    mock.onPost("http://localhost:8080/user").reply(201, userResponse);
-
-    const response = await client.createUser(user);
-
-    expect(response).toEqual(userResponse);
-  });
-
-  //TODO: verificar o error como deve ser feito
-  test("should throw an error when accountService request fail", async () => {
-    const user = {
-      name: "Name of test",
-      companyName: "Companny name of test",
-      password: "UserPasswordOfTest",
-      userName: "UserNameOfTest",
-    };
-
     mock.onPost("http://localhost:8080/user").reply(400);
 
     await expect(client.createUser(user)).rejects.toThrow(Error);
-  });
-});
-
-describe("changeUser unit test", () => {
-  afterEach(() => mock.resetHandlers());
-
-  test("should return an user when it receive a user to change it", async () => {
-    const user = {
-      id: "27bc9743-1923-4ade-b364-04a0805175c1",
-      name: "teste post ownerrrrrr bff",
-      company: {
-        id: "27bc9743-1923-4ade-b364-04a0805175c1",
-        name: "teste post ownerrrrrr bff",
-      },
-    };
-
-    //TODO
-  });
-
-  test("should throw an error when accountService request fail", async () => {
-    //TODO
   });
 });
 
@@ -257,11 +226,29 @@ describe("getProfile unit test", () => {
       description: "OWNER",
     };
 
-    //TODO
+    mock
+      .onGet(
+        "http://localhost:8080/profile/27bc9743-1923-4ade-b364-04a0805175c1"
+      )
+      .reply(200, profile);
+
+    const response = await client.getProfile(
+      "27bc9743-1923-4ade-b364-04a0805175c1"
+    );
+
+    expect(response).toEqual(profile);
   });
 
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    mock
+      .onGet(
+        "http://localhost:8080/profile/00000000-0000-0000-0000-000000000000"
+      )
+      .reply(400);
+
+    await expect(
+      client.getProfile("00000000-0000-0000-0000-000000000000")
+    ).rejects.toThrow(Error);
   });
 });
 
@@ -284,10 +271,16 @@ describe("getProfiles unit test", () => {
       },
     ];
 
-    //TODO
+    mock.onGet("http://localhost:8080/profile").reply(200, profiles);
+
+    const response = await client.getProfiles();
+
+    expect(response).toEqual(profiles);
   });
 
   test("should throw an error when accountService request fail", async () => {
-    //TODO
+    mock.onGet("http://localhost:8080/profiles").reply(400);
+
+    await expect(client.getProfiles()).rejects.toThrow(Error);
   });
 });
