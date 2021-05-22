@@ -9,6 +9,7 @@ describe("getLogin unit tests", () => {
       id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
       userName: "teste_criação_dsfdsaddf",
+      userId: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       profile: {
         id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
         description: "OWNER",
@@ -26,7 +27,13 @@ describe("getLogin unit tests", () => {
       password: "somethinklikethis",
     });
 
-    expect(login).toStrictEqual({ auth: true, token: "token145687IssoAe" });
+    console.log();
+    expect(login).toStrictEqual({
+      auth: true,
+      profileId: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+      token: "token145687IssoAe",
+      userId: "92e4d6f9-2113-462e-bef2-eb373add5eca",
+    });
   });
 
   test("should return a error when password is wrong", async () => {
@@ -34,6 +41,7 @@ describe("getLogin unit tests", () => {
       id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
       userName: "teste_criação_dsfdsaddf",
+      userId: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       profile: {
         id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
         description: "OWNER",
@@ -67,6 +75,7 @@ describe("getLogin unit tests", () => {
       id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
       userName: "teste_criação_dsfdsaddf",
+      userId: "92e4d6f9-2113-462e-bef2-eb373add5eca",
       profile: {
         id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
         description: "OWNER",

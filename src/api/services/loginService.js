@@ -7,7 +7,7 @@ exports.getLogin = async (login) => {
     const response = await accountClient.getUserLoginByUserName(login.userName);
 
     if (await hashService.comparePassword(login.password, response.password)) {
-      const userId = response.id;
+      const userId = response.userId;
       const profileId = response.profile.id;
 
       const jwtPayload = { userId: userId, profileId };
@@ -15,6 +15,8 @@ exports.getLogin = async (login) => {
       const jwtToken = jwtService.createJwtToken(jwtPayload);
 
       return {
+        userId, 
+        profileId,
         auth: true,
         token: jwtToken,
       };
