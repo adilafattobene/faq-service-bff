@@ -10,8 +10,14 @@ exports.getUser = async (token, userId) => {
       throw Error("not_authorized");
     }
 
-    const res = await accountClient.getUser(userId);
-    return res;
+    const profile = await accountClient.getUserProfile(userId);
+
+    const user = await accountClient.getUser(userId);
+
+    return {
+      ...user,
+      profile: profile.description
+    };
   } catch (err) {
     throw err;
   }

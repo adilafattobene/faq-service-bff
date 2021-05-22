@@ -16,17 +16,17 @@ describe("getUser unit tests", () => {
       login: {
         userName: "UserNameOfTest",
         profile: {
-          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
           description: "OWNER",
         },
       },
+      profile: "OWNER",
     };
     jest.spyOn(jwtService, "verifyToken").mockResolvedValue(jwtToken);
     jest.spyOn(client, "getUser").mockResolvedValue(user);
 
     await expect(
       service.getUser("thisIsAValidadeToken", user.id)
-    ).resolves.toBe(user);
+    ).resolves.toStrictEqual(user);
   });
 
   test("should return a not_authorized error when token has invalid user", async () => {
