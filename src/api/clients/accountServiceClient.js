@@ -3,12 +3,18 @@ const axios = require("axios");
 exports.getUser = async function (userId) {
   try {
     const res = await axios.get("http://localhost:8080/user/" + userId);
-
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }
-};
+  }};
+
+exports.getUserProfile = async function (userId) {
+  try {
+    const res = await axios.get("http://localhost:8080/profile/user/" + userId);
+    return res.data;
+  } catch (error) {
+    throw new Error("not_found");
+  }};
 
 exports.getUsersById = async function (userId) {
   try {
@@ -25,8 +31,7 @@ exports.getUsersById = async function (userId) {
     });
   } catch (error) {
     throw new Error("not_found");
-  }
-};
+  }};
 
 exports.getUserLoginByUserName = async function (userName) {
   try {
@@ -37,8 +42,7 @@ exports.getUserLoginByUserName = async function (userName) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }
-};
+  }};
 
 exports.createUserChild = async function (userId, user) {
   try {
@@ -64,8 +68,7 @@ exports.createUserChild = async function (userId, user) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }
-};
+  }};
 
 exports.createUser = async function (user) {
   try {
@@ -92,16 +95,16 @@ exports.createUser = async function (user) {
   }
 };
 
-exports.changeUser = (user, userId) => {
-  //TODO PUT
-  let resp = {
-    userId: userId,
-    email: "teste@teste.com.br",
-    profile: "OWNER",
-  };
+// exports.changeUser = (user, userId) => {
+//   //TODO PUT
+//   let resp = {
+//     userId: userId,
+//     email: "teste@teste.com.br",
+//     profile: "OWNER",
+//   };
 
-  return resp;
-};
+//   return resp;
+// };
 
 exports.getProfile = async (profileId) => {
   try {
@@ -123,6 +126,7 @@ exports.getProfiles = async () => {
 
     return res.data;
   } catch (error) {
+    console.log(error)
     if (error.response.data.error === "resource_not_found_error") {
       throw new Error("resource_not_found_error");
     }
