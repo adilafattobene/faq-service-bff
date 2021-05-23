@@ -6,7 +6,8 @@ exports.getUser = async function (userId) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }};
+  }
+};
 
 exports.getUserProfile = async function (userId) {
   try {
@@ -14,7 +15,8 @@ exports.getUserProfile = async function (userId) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }};
+  }
+};
 
 exports.getUsersById = async function (userId) {
   try {
@@ -31,7 +33,8 @@ exports.getUsersById = async function (userId) {
     });
   } catch (error) {
     throw new Error("not_found");
-  }};
+  }
+};
 
 exports.getUserLoginByUserName = async function (userName) {
   try {
@@ -42,7 +45,8 @@ exports.getUserLoginByUserName = async function (userName) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }};
+  }
+};
 
 exports.createUserChild = async function (userId, user) {
   try {
@@ -68,7 +72,8 @@ exports.createUserChild = async function (userId, user) {
     return res.data;
   } catch (error) {
     throw new Error("not_found");
-  }};
+  }
+};
 
 exports.createUser = async function (user) {
   try {
@@ -126,7 +131,25 @@ exports.getProfiles = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    if (error.response.data.error === "resource_not_found_error") {
+      throw new Error("resource_not_found_error");
+    }
+
+    throw new Error(error);
+  }
+};
+
+exports.changeUser = async (userId, bodyToChange) => {
+  try {
+    const res = await axios.put(
+      "http://localhost:8080/user/" + userId,
+      bodyToChange
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
     if (error.response.data.error === "resource_not_found_error") {
       throw new Error("resource_not_found_error");
     }

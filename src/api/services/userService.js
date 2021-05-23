@@ -61,7 +61,7 @@ exports.createChild = async (token, user, userId) => {
       throw Error("unauthorized_token");
     }
 
-    if (!hasPermissionToCreateNewProfile(jwtResponse.profileId)) {
+    if (!hasPermissionToCreateOrChangeAUser(jwtResponse.profileId)) {
       throw Error("unauthorized_profile");
     }
 
@@ -94,7 +94,7 @@ const isNewerUserProfileValid = (newerUserProfile) => {
   return false;
 };
 
-const hasPermissionToCreateNewProfile = (profile) => {
+const hasPermissionToCreateOrChangeAUser = (profile) => {
   if (profile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
     throw Error("NotPermitedError");
   }
@@ -117,5 +117,27 @@ exports.getProfile = async (profileId) => {
     return profile;
   } catch (error) {
     throw error;
+  }
+};
+
+exports.changeUserCompany = async (token, company, userId) => {
+  try {
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    if (jwtResponse.userId != userId) {
+      throw Error("unauthorized_token");
+    }
+
+    if (!hasPermissionToCreateOrChangeAUser(jwtResponse.profileId)) {
+      throw Error("unauthorized_profile");
+    }
+
+    const companyChanged = await accountClient.changeUser(userId, {
+      company,
+    });
+
+    return companyChanged;
+  } catch (err) {
+    throw err;
   }
 };

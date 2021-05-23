@@ -168,3 +168,72 @@ exports.createChild = async (req, res) => {
 
 //   res.send("Requisição changeUser");
 // };
+
+exports.changeCompany = async (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token)
+    return res.status(401).json({ auth: false, message: "No token provided." });
+
+  try {
+    const response = await service.changeUserCompany(
+      token,
+      req.body,
+      req.params.id
+    );
+
+    return res.status(201).json(response);
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Expired token." });
+    }
+
+    if (err.name === "JsonWebTokenError") {
+      switch (err.message) {
+        case "invalid token":
+        case "jwt malformed":
+          return res.status(401).json({ message: "Invalid token." });
+        default:
+          return res.status(500).json({
+            message:
+              "Erro durante validação do token na requisição changeUser.",
+          });
+      }
+    }
+
+    if (err.message === "unauthorized_profile") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message: "Unauthorized profile to changeUser.",
+      });
+    }
+
+    if (err.message === "unauthorized_token") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message: "Unauthorized token to changeUser.",
+      });
+    }
+
+    if (err.message === "NotPermitedError") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message: "Unauthorized profile to changeUser.",
+      });
+    }
+
+    if (err.message === "resource_not_found_error") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message: "Não foi encontrado o usuário para alteração - changeUser.",
+      });
+    }
+
+    return res
+      .status(500)
+      .json({ message: "Something is wrong - changeUser." });
+  }
+};
