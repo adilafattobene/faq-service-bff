@@ -6,4 +6,5 @@ module.exports = (app) => {
   app.post("/user", controller.createUser);
   app.post("/user/:id", controller.createChild);
   app.put("/user/:id/company", controller.changeCompany);
+  app.put("/user/:id", controller.changeUser);
 };

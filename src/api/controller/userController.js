@@ -161,13 +161,55 @@ exports.createChild = async (req, res) => {
   }
 };
 
-// exports.changeUser = (req, res, next) => {
-//   //TODO
-//   //receber a informação e passar para o service account
-//   let userChanged = client.changeUser;
+exports.changeUser = async (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token)
+    return res.status(401).json({ auth: false, message: "No token provided." });
 
-//   res.send("Requisição changeUser");
-// };
+  try {
+    const response = await service.changeUser(token, req.body, req.params.id);
+
+    return res.status(201).json(response);
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Expired token." });
+    }
+
+    if (err.name === "JsonWebTokenError") {
+      switch (err.message) {
+        case "invalid token":
+        case "jwt malformed":
+          return res.status(401).json({ message: "Invalid token." });
+        default:
+          return res.status(500).json({
+            message:
+              "Erro durante validação do token na requisição changeUser - name.",
+          });
+      }
+    }
+
+    if (err.message === "unauthorized_token") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message: "Unauthorized token to changeUser - name.",
+      });
+    }
+
+    if (err.message === "resource_not_found_error") {
+      //
+      return res.status(401).json({
+        auth: false,
+        message:
+          "Não foi encontrado o usuário para alteração - changeUser - name.",
+      });
+    }
+
+    return res
+      .status(500)
+      .json({ message: "Something is wrong - changeUser - name." });
+  }
+};
 
 exports.changeCompany = async (req, res, next) => {
   const token = req.headers["x-access-token"];

@@ -16,7 +16,7 @@ exports.getUser = async (token, userId) => {
 
     return {
       ...user,
-      profile: profile.description
+      profile: profile.description,
     };
   } catch (err) {
     throw err;
@@ -61,7 +61,7 @@ exports.createChild = async (token, user, userId) => {
       throw Error("unauthorized_token");
     }
 
-    if (!hasPermissionToCreateOrChangeAUser(jwtResponse.profileId)) {
+    if (!hasPermissionToCreateOrChangeAnUser(jwtResponse.profileId)) {
       throw Error("unauthorized_profile");
     }
 
@@ -94,7 +94,7 @@ const isNewerUserProfileValid = (newerUserProfile) => {
   return false;
 };
 
-const hasPermissionToCreateOrChangeAUser = (profile) => {
+const hasPermissionToCreateOrChangeAnUser = (profile) => {
   if (profile != "fcec55dc-9d24-4c0d-99ad-c99960660f2c") {
     throw Error("NotPermitedError");
   }
@@ -120,6 +120,24 @@ exports.getProfile = async (profileId) => {
   }
 };
 
+exports.changeUser = async (token, user, userId) => {
+  try {
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    if (jwtResponse.userId != userId) {
+      throw Error("unauthorized_token");
+    }
+
+    const userChanged = await accountClient.changeUser(userId, {
+      name: user.name,
+    });
+
+    return userChanged;
+  } catch (err) {
+    throw err;
+  }
+};
+
 exports.changeUserCompany = async (token, company, userId) => {
   try {
     const jwtResponse = await jwtService.verifyToken(token);
@@ -128,7 +146,7 @@ exports.changeUserCompany = async (token, company, userId) => {
       throw Error("unauthorized_token");
     }
 
-    if (!hasPermissionToCreateOrChangeAUser(jwtResponse.profileId)) {
+    if (!hasPermissionToCreateOrChangeAnUser(jwtResponse.profileId)) {
       throw Error("unauthorized_profile");
     }
 
