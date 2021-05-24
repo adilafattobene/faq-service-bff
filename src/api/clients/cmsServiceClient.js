@@ -9,8 +9,7 @@ exports.getFaqs = async function (profile) {
     return res.data;
   } catch (error) {
     throw new Error(error);
-  }
-};
+  }};
 
 exports.getFaqBySlug = async function (profile, slug) {
   try {
@@ -24,5 +23,4 @@ exports.getFaqBySlug = async function (profile, slug) {
     return res.data;
   } catch (error) {
     throw new Error(error);
-  }
-};
+  }};
