@@ -159,3 +159,41 @@ exports.changeUserCompany = async (token, company, userId) => {
     throw err;
   }
 };
+
+exports.changeUserLogin = async (token, userLogin, userId) => {
+  try {
+    const jwtResponse = await jwtService.verifyToken(token);
+
+    if (jwtResponse.userId != userId) {
+      throw Error("unauthorized_token");
+    }
+
+    if (!hasPermissionToCreateOrChangeAnUser(jwtResponse.profileId)) {
+      throw Error("unauthorized_profile");
+    }
+
+    const responseUser = await accountClient.getUserLoginByUserId(userId);
+
+    if (
+      await hashService.comparePassword(
+        userLogin.oldPassword,
+        responseUser.password
+      )
+    ) {
+      const userLoginChanged = await accountClient.changeUser(userId, {
+        login: {
+          userName: userLogin.login.username,
+          password: await hashService.hashingPasswordAsync(
+            userLogin.login.password
+          ),
+        },
+      });
+
+      return userLoginChanged;
+    } else {
+      throw Error("invalid_password");
+    }
+  } catch (err) {
+    throw err;
+  }
+};

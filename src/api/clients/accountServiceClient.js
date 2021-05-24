@@ -157,3 +157,13 @@ exports.changeUser = async (userId, bodyToChange) => {
     throw new Error(error);
   }
 };
+
+exports.getUserLoginByUserId = async function (userId) {
+  try {
+    const res = await axios.get("http://localhost:8080/login/user/" + userId);
+
+    return res.data;
+  } catch (error) {
+    throw new Error("not_found");
+  }
+};
