@@ -187,7 +187,40 @@ describe("createUserChild unit test", () => {
 
 describe("createUser unit test", () => {
   afterEach(() => mock.resetHandlers());
+
   test("should create an user when it receive a userBody and given an userId", async () => {
+    const user = {
+      name: "Name of test",
+      login: {
+        userName: "UserNameOfTest",
+        password: "thisIsaGreatPassword",
+      },
+      company: {
+        name: "teste post ownerrrrrr bff",
+      },
+    };
+
+    const userResponse = {
+      id: "27bc9743-1923-4ade-b364-04a0805175c1",
+      name: "Name Of Test",
+      login: {
+        userName: "UserNameofTest",
+        profile: {
+          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+          description: "OWNER",
+        },
+      },
+    };
+
+    mock.onPost("http://localhost:8080/user").reply(200, userResponse);
+
+    const response = await client.createUser(user);
+
+    expect(response).toEqual(userResponse);
+    // await expect(client.createUser(user)).rejects.toThrow(Error);
+  });
+
+  test("should error when client response is an error", async () => {
     const user = {
       name: "Name of test",
       login: {
@@ -282,5 +315,147 @@ describe("getProfiles unit test", () => {
     mock.onGet("http://localhost:8080/profiles").reply(400);
 
     await expect(client.getProfiles()).rejects.toThrow(Error);
+  });
+});
+
+describe("getUserProfile unit test", () => {
+  afterEach(() => mock.resetHandlers());
+
+  test("should return a profile when it receives an userId", async () => {
+    const profile = {
+      id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+      description: "OWNER",
+    };
+
+    mock
+      .onGet(
+        "http://localhost:8080/profile/user/00000000-0000-0000-0000-000000000000"
+      )
+      .reply(200, profile);
+
+    const response = await client.getUserProfile(
+      "00000000-0000-0000-0000-000000000000"
+    );
+
+    expect(response).toEqual(profile);
+  });
+
+  test("should throw an error when accountService request fail", async () => {
+    mock
+      .onGet(
+        "http://localhost:8080/profile/user/00000000-0000-0000-0000-000000000000"
+      )
+      .reply(400);
+
+    await expect(
+      client.getUserProfile("00000000-0000-0000-0000-000000000000")
+    ).rejects.toThrow(Error);
+  });
+});
+
+describe("changeUser unit test", () => {
+  afterEach(() => mock.resetHandlers());
+
+  test("should change an user correctly", async () => {
+    const user = {
+      name: "teste criação filho",
+      login: {
+        userName: "criacaoFilho",
+        password: "testeCriacaoFilho",
+        profile: {
+          id: "61cfce77-0e67-4a86-ba19-afe0c91eceb1",
+        },
+      },
+    };
+    const userResponse = {
+      id: "27bc9743-1923-4ade-b364-04a0805175c1",
+      name: "Name Of Test",
+      login: {
+        userName: "UserNameofTest",
+        profile: {
+          id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+          description: "OWNER",
+        },
+      },
+    };
+
+    mock
+      .onPut(
+        "http://localhost:8080/user/00000000-0000-0000-0000-000000000000"
+      )
+      .reply(200, userResponse);
+
+    const response = await client.changeUser(
+      "00000000-0000-0000-0000-000000000000", user
+    );
+
+    expect(response).toEqual(userResponse);
+  });
+
+  test("should throw an error when accountService request fail", async () => {
+    const user = {
+      name: "teste criação filho",
+      login: {
+        userName: "criacaoFilho",
+        password: "testeCriacaoFilho",
+        profile: {
+          id: "61cfce77-0e67-4a86-ba19-afe0c91eceb1",
+        },
+      },
+    };
+
+    mock
+      .onPut(
+        "http://localhost:8080/user/00000000-0000-0000-0000-000000000000"
+      )
+      .reply(400);
+
+    await expect(
+      client.changeUser("00000000-0000-0000-0000-000000000000", user)
+    ).rejects.toThrow(Error);
+  });
+});
+
+describe("getUserLoginByUserId unit test", () => {
+  afterEach(() => mock.resetHandlers());
+
+  test("should change an user correctly", async () => {
+    const userLogin = {
+      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
+      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
+      userName: "UserNameofTest",
+      profile: {
+        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+        description: "OWNER",
+      },
+    };
+
+    mock
+      .onGet("http://localhost:8080/login/user/00000000-0000-0000-0000-000000000000")
+      .reply(200, userLogin);
+
+    const response = await client.getUserLoginByUserId("00000000-0000-0000-0000-000000000000");
+
+    expect(response).toEqual(userLogin);
+  });
+
+  test("should throw an error when accountService request fail", async () => {
+    const userLogin = {
+      id: "92e4d6f9-2113-462e-bef2-eb373add5eca",
+      password: "$2b$10$TGyYor9FNcqwJVTaFtpAEOCa6prwacfpCnwy/lhKX1aW.ClbU.cB6",
+      userName: "UserNameofTest",
+      profile: {
+        id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+        description: "OWNER",
+      },
+    };
+
+    mock
+      .onGet("http://localhost:8080/login/user/00000000-0000-0000-0000-000000000000")
+      .reply(400);
+
+    await expect(
+      client.getUserLoginByUserId("00000000-0000-0000-0000-000000000000")
+    ).rejects.toThrow(Error);
   });
 });
