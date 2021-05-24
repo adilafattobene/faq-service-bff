@@ -21,6 +21,13 @@ describe("getUser unit tests", () => {
       },
       profile: "OWNER",
     };
+
+    const profile = {
+      id: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
+      description: "OWNER",
+    };
+
+    jest.spyOn(client, "getUserProfile").mockResolvedValue(profile);
     jest.spyOn(jwtService, "verifyToken").mockResolvedValue(jwtToken);
     jest.spyOn(client, "getUser").mockResolvedValue(user);
 
