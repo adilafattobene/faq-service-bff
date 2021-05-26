@@ -461,7 +461,7 @@ describe("createUser unit tests", () => {
     );
 
     expect(res.status).toHaveBeenCalledWith(409);
-    expect(res.json).toHaveBeenCalledWith({ message: "Conflicted user." });
+    expect(res.json).toHaveBeenCalledWith({ message: "user_conflict" });
   });
 
   test("should return 500", async () => {

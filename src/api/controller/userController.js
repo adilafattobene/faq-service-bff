@@ -99,7 +99,7 @@ exports.createUser = async (req, res) => {
     return res.status(201).json({ token: jwtToken });
   } catch (err) {
     if (err.message === "conflict_error") {
-      return res.status(409).json({ message: "Conflicted user." });
+      return res.status(409).json({ message: "user_conflict" });
     }
     return res
       .status(500)
