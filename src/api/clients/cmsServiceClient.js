@@ -3,7 +3,7 @@ const axios = require("axios");
 exports.getFaqs = async function (profile) {
   try {
     const res = await axios.get(
-      "http://localhost:1337/faqs?type=" + profile.toLowerCase()
+      "http://localhost:1337/faqs?type=" + profile.toUpperCase()
     );
 
     return res.data;
@@ -15,7 +15,7 @@ exports.getFaqBySlug = async function (profile, slug) {
   try {
     const res = await axios.get(
       "http://localhost:1337/faqs?type=" +
-        profile.toLowerCase() +
+        profile.toUpperCase() +
         "&slug=" +
         slug
     );

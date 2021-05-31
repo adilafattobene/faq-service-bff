@@ -29,7 +29,7 @@ describe("getFaqs unit tests", () => {
       },
     ];
 
-    mock.onGet("http://localhost:1337/faqs?type=public").reply(200, {
+    mock.onGet("http://localhost:1337/faqs?type=PUBLIC").reply(200, {
       faqs: faqs,
     });
 
@@ -39,11 +39,9 @@ describe("getFaqs unit tests", () => {
   });
 
   test("should throw an error when cms request fail", async () => {
-    mock
-      .onGet("http://localhost:1337/faqs?type=public")
-      .reply(400);
+    mock.onGet("http://localhost:1337/faqs?type=PUBLIC").reply(400);
 
-      await expect(client.getFaqs("public")).rejects.toThrow(Error);
+    await expect(client.getFaqs("public")).rejects.toThrow(Error);
   });
 });
 
@@ -51,7 +49,6 @@ describe("getFaqById unit tests", () => {
   afterEach(() => mock.resetHandlers());
 
   test("should return a faq when it receive a slug", async () => {
-
     const faq = {
       id: 1,
       slug: "como-se-cadastrar",
@@ -70,7 +67,7 @@ describe("getFaqById unit tests", () => {
     };
 
     mock
-      .onGet("http://localhost:1337/faqs?type=public&slug=como-se-cadastrar")
+      .onGet("http://localhost:1337/faqs?type=PUBLIC&slug=como-se-cadastrar")
       .reply(200, {
         faq: faq,
       });
@@ -82,9 +79,11 @@ describe("getFaqById unit tests", () => {
 
   test("should throw an error when cms request fail", async () => {
     mock
-      .onGet("http://localhost:1337/faqs?type=public&slug=como-se-cadastrar")
+      .onGet("http://localhost:1337/faqs?type=PUBLIC&slug=como-se-cadastrar")
       .reply(400);
 
-      await expect(client.getFaqBySlug("public", "como-se-cadastrar")).rejects.toThrow(Error);
+    await expect(
+      client.getFaqBySlug("public", "como-se-cadastrar")
+    ).rejects.toThrow(Error);
   });
 });
