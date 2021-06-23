@@ -27,7 +27,6 @@ describe("getLogin unit tests", () => {
       password: "somethinklikethis",
     });
 
-    console.log();
     expect(login).toStrictEqual({
       auth: true,
       profileId: "fcec55dc-9d24-4c0d-99ad-c99960660f2c",

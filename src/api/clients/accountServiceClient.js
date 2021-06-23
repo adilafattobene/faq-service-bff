@@ -113,7 +113,6 @@ exports.getProfiles = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error);
     if (error.response.data.error === "resource_not_found_error") {
       throw new Error("resource_not_found_error");
     }

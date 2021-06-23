@@ -5,7 +5,6 @@ exports.hashingPassword = function (psw, next) {
     if (!hash) {
       next();
     }
-    console.log(hash);
     next(hash);
   });
 };

@@ -9,7 +9,6 @@ exports.getLogin = async (req, res) => {
     if (err.message === "invalid_password") {
       return res.status(403).json({ message: "Invalid Password." });
     }
-
     return res.status(500).json({ message: "Something is wrong - getLogin." });
   }
 };
