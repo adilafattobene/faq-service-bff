@@ -11,16 +11,22 @@ exports.getUserProfile = async function (userId) {
     console.log("Conectado");
   });
 
-  let sql = "select * from login where account_id=$1";
+  try {
+    let sql = "select * from login where account_id=$1";
 
-  const a = await connection.query(sql, [userId]);
+    const a = await connection.query(sql, [userId]);
 
-  connection.end();
-
-  return a.rows[0];
+    connection.end();
+    
+    return a.rows[0];
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
 };
 
-const getUser = async function (userId) {
+exports.getUser = async function (userId) {
   let connection = dbConnection();
 
   connection.connect(function (err) {
@@ -29,16 +35,20 @@ const getUser = async function (userId) {
     }
     console.log("Conectado");
   });
+  try {
+    let sql = "select * from account where id=$1";
 
-  let sql = "select * from account where id=$1";
+    const a = await connection.query(sql, [userId]);
 
-  const a = await connection.query(sql, [userId]);
+    connection.end();
 
-  connection.end();
-
-  return a.rows[0];
+    return a.rows[0];
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
 };
-exports.getUser;
 
 exports.getUsersById = async function (userId) {
   let connection = dbConnection();
@@ -50,13 +60,19 @@ exports.getUsersById = async function (userId) {
     console.log("Conectado");
   });
 
-  let sql = "select * from account where owner_id=$1";
+  try {
+    let sql = "select * from account where owner_id=$1";
 
-  const a = await connection.query(sql, [userId]);
+    const a = await connection.query(sql, [userId]);
 
-  connection.end();
+    connection.end();
 
-  return a.rows;
+    return a.rows;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
 };
 
 exports.createUser = async function (user) {
@@ -120,7 +136,7 @@ exports.createUserChild = async function (userId, user) {
   });
 
   try {
-    let ownerUser = await getUser(userId);
+    let ownerUser = await this.getUser(userId);
 
     let sqlAccount =
       "insert into account(id, name, company_id, owner_id) values ($1, $2, $3, $4) RETURNING *";
@@ -253,7 +269,7 @@ exports.changeUser = async (userId, bodyToChange) => {
   });
 
   try {
-    let user = await getUser(userId);
+    let user = await this.getUser(userId);
 
     const sqlCompany = "update company set name=$1 where id=$2";
     const sqlValuesCompany = [bodyToChange.company.name, user.company_id];
