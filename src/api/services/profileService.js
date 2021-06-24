@@ -1,6 +1,6 @@
 const accountClient = require("../clients/accountServiceClient");
 const jwtService = require("../services/jwtService");
-const userModel = require("../models/userModel");
+const userModel = require("../models/accountDbModel");
 
 exports.getProfiles = async (token) => {
   try {
