@@ -1,7 +1,7 @@
 const hashService = require("../services/hashService");
 const jwtService = require("../services/jwtService");
 const accountClient = require("../clients/accountServiceClient");
-const userModel = require("../models/userModel");
+const userModel = require("../models/accountDbModel");
 
 exports.getLogin = async (login) => {
   try {
