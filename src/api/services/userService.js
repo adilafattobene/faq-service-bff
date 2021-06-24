@@ -188,9 +188,17 @@ exports.changeUserCompany = async (token, company, userId) => {
       throw Error("unauthorized_profile");
     }
 
-    const companyChanged = await accountClient.changeUser(userId, {
-      company,
-    });
+    let companyChanged;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      companyChanged = await userModel.changeUser(userId, {
+        company,
+      });
+    } else {
+      companyChanged = await accountClient.changeUser(userId, {
+        company,
+      });
+    }
 
     return companyChanged;
   } catch (err) {

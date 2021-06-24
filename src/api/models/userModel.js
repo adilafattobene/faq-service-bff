@@ -232,13 +232,40 @@ exports.getUserLoginByUserName = async function (userName) {
       userName: userLogin.rows[0].user_name,
       accountId: userLogin.rows[0].account_id,
       profile: {
-        id: userLogin.rows[0].profile_id
-      }
+        id: userLogin.rows[0].profile_id,
+      },
     };
   } catch (err) {
     console.log(err);
   } finally {
     connection.end();
   }
+};
 
+exports.changeUser = async (userId, bodyToChange) => {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    let user = await getUser(userId);
+
+    const sqlCompany = "update company set name=$1 where id=$2";
+    const sqlValuesCompany = [bodyToChange.company.name, user.company_id];
+
+    const companyChanged = await connection.query(sqlCompany, sqlValuesCompany);
+
+    connection.end();
+
+    return companyChanged.rows[0];
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
 };
