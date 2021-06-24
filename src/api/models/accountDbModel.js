@@ -17,7 +17,7 @@ exports.getUserProfile = async function (userId) {
     const a = await connection.query(sql, [userId]);
 
     connection.end();
-    
+
     return a.rows[0];
   } catch (err) {
     console.log(err);
@@ -243,10 +243,10 @@ exports.getUserLoginByUserName = async function (userName) {
     connection.end();
 
     return {
-      userId: userLogin.rows[0].id,
+      id: userLogin.rows[0].id,
       password: userLogin.rows[0].password,
       userName: userLogin.rows[0].user_name,
-      accountId: userLogin.rows[0].account_id,
+      userId: userLogin.rows[0].account_id,
       profile: {
         id: userLogin.rows[0].profile_id,
       },
