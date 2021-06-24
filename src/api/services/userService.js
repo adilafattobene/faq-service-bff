@@ -1,6 +1,7 @@
 const accountClient = require("../clients/accountServiceClient");
 const jwtService = require("../services/jwtService");
 const hashService = require("../services/hashService");
+const userModel = require("../models/userModel");
 
 exports.getUser = async (token, userId) => {
   try {
@@ -10,9 +11,18 @@ exports.getUser = async (token, userId) => {
       throw Error("not_authorized");
     }
 
-    const profile = await accountClient.getUserProfile(userId);
+    let profile = undefined;
+    let user = undefined;
 
-    const user = await accountClient.getUser(userId);
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      profile = await userModel.getUserProfile(userId);
+
+      user = await userModel.getUser(userId);
+    } else {
+      profile = await accountClient.getUserProfile(userId);
+
+      user = await accountClient.getUser(userId);
+    }
 
     return {
       ...user,
