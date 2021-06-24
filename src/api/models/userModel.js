@@ -183,3 +183,28 @@ exports.getProfiles = async () => {
     connection.end();
   }
 };
+
+exports.getProfile = async (profileId) => {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    let sql = "select * from profile where id=$1";
+
+    const profile = await connection.query(sql, [profileId]);
+
+    connection.end();
+
+    return profile.rows[0];
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+};

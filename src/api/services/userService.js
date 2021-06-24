@@ -144,7 +144,13 @@ const copyUserWIthPasswordHashed = (passwordHashed, user) => {
 
 exports.getProfile = async (profileId) => {
   try {
-    let profile = await accountClient.getProfile(profileId);
+    let profile;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      profile = await userModel.getProfile(profileId);
+    } else {
+      profile = await accountClient.getProfile(profileId);
+    }
 
     return profile;
   } catch (error) {
