@@ -285,3 +285,36 @@ exports.changeUser = async (userId, bodyToChange) => {
     connection.end();
   }
 };
+
+exports.changeUserName = async (userId, bodyToChange) => {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    const sqlChangeAccount =
+      "update account set name=$1 where id=$2 RETURNING *";
+    const sqlValuesAccount = [bodyToChange.name, userId];
+
+    const accountChanged = await connection.query(
+      sqlChangeAccount,
+      sqlValuesAccount
+    );
+
+    connection.end();
+
+    return {
+      id: accountChanged.rows[0].id,
+      name: accountChanged.rows[0].name,
+    };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+};

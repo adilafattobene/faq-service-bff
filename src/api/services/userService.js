@@ -166,9 +166,17 @@ exports.changeUser = async (token, user, userId) => {
       throw Error("unauthorized_token");
     }
 
-    const userChanged = await accountClient.changeUser(userId, {
-      name: user.name,
-    });
+    let userChanged;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      userChanged = await userModel.changeUserName(userId, {
+        name: user.name,
+      });
+    } else {
+      userChanged = await accountClient.changeUser(userId, {
+        name: user.name,
+      });
+    }
 
     return userChanged;
   } catch (err) {
