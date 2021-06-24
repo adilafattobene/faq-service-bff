@@ -20,7 +20,7 @@ exports.getUserProfile = async function (userId) {
   return a.rows[0];
 };
 
-exports.getUser = async function (userId) {
+const getUser = async function (userId) {
   let connection = dbConnection();
 
   connection.connect(function (err) {
@@ -38,6 +38,7 @@ exports.getUser = async function (userId) {
 
   return a.rows[0];
 };
+exports.getUser;
 
 exports.getUsersById = async function (userId) {
   let connection = dbConnection();
@@ -100,6 +101,56 @@ exports.createUser = async function (user) {
       name: account.rows[0].name,
       login: login.rows[0],
       company: company.rows[0],
+    };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+};
+
+exports.createUserChild = async function (userId, user) {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    let ownerUser = await getUser(userId);
+
+    let sqlAccount =
+      "insert into account(id, name, company_id, owner_id) values ($1, $2, $3, $4) RETURNING *";
+    let sqlValuesAccount = [
+      v4(),
+      user.name,
+      ownerUser.company_id,
+      ownerUser.id,
+    ];
+
+    const account = await connection.query(sqlAccount, sqlValuesAccount);
+
+    let sqlLogin =
+      "insert into login(id, user_name, password, account_id, profile_id) values ($1, $2, $3, $4, $5) RETURNING *";
+    let sqlValuesLogin = [
+      v4(),
+      user.name,
+      user.password,
+      account.rows[0].id,
+      "b2e2e9a8-0497-466d-9c32-787f11989431",
+    ];
+
+    const login = await connection.query(sqlLogin, sqlValuesLogin);
+
+    connection.end();
+
+    return {
+      id: account.rows[0].id,
+      name: account.rows[0].name,
+      login: login.rows[0],
     };
   } catch (err) {
     console.log(err);

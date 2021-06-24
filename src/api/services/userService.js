@@ -93,13 +93,23 @@ exports.createChild = async (token, user, userId) => {
 
     const passHashed = await hashService.hashingPasswordAsync(user.password);
 
-    const userCreated = await accountClient.createUserChild(
-      userId,
-      copyUserWIthPasswordHashed(passHashed, user)
-    );
+    let userCreated;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      userCreated = await userModel.createUserChild(
+        userId,
+        copyUserWIthPasswordHashed(passHashed, user)
+      );
+    } else {
+      userCreated = await accountClient.createUserChild(
+        userId,
+        copyUserWIthPasswordHashed(passHashed, user)
+      );
+    }
 
     return userCreated;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 };
