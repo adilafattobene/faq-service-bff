@@ -158,3 +158,28 @@ exports.createUserChild = async function (userId, user) {
     connection.end();
   }
 };
+
+exports.getProfiles = async () => {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    let sql = "select * from profile";
+
+    const profiles = await connection.query(sql);
+
+    connection.end();
+
+    return profiles.rows;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+};

@@ -1,5 +1,6 @@
 const accountClient = require("../clients/accountServiceClient");
 const jwtService = require("../services/jwtService");
+const userModel = require("../models/userModel");
 
 exports.getProfiles = async (token) => {
   try {
@@ -9,8 +10,15 @@ exports.getProfiles = async (token) => {
       throw Error("not_authorized");
     }
 
-    const res = await accountClient.getProfiles();
-    return res;
+    let profiles;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      profiles = await userModel.getProfiles();
+    } else {
+      profiles = await accountClient.getProfiles();
+    }
+
+    return profiles;
   } catch (err) {
     throw err;
   }
