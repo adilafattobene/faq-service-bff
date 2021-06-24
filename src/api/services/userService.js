@@ -57,9 +57,17 @@ exports.createUser = async (user) => {
   try {
     const passHashed = await hashService.hashingPasswordAsync(user.password);
 
-    const userCreated = await accountClient.createUser(
-      copyUserWIthPasswordHashed(passHashed, user)
-    );
+    let userCreated = undefined;
+
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      userCreated = await userModel.createUser(
+        copyUserWIthPasswordHashed(passHashed, user)
+      );
+    } else {
+      userCreated = await accountClient.createUser(
+        copyUserWIthPasswordHashed(passHashed, user)
+      );
+    }
 
     return userCreated;
   } catch (err) {
