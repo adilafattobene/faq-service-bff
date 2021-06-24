@@ -40,8 +40,12 @@ exports.getUsersById = async (token, userId) => {
     if (jwtResponse.userId != userId) {
       throw Error("not_authorized");
     }
-
-    const res = await accountClient.getUsersById(userId);
+    let res = undefined;
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      res = await userModel.getUsersById(userId);
+    } else {
+      res = await accountClient.getUsersById(userId);
+    }
 
     return res;
   } catch (err) {
