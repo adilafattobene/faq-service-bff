@@ -208,3 +208,37 @@ exports.getProfile = async (profileId) => {
     connection.end();
   }
 };
+
+exports.getUserLoginByUserName = async function (userName) {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    let sql = "select * from login where user_name=$1";
+
+    const userLogin = await connection.query(sql, [userName]);
+
+    connection.end();
+
+    return {
+      id: userLogin.rows[0].id,
+      password: userLogin.rows[0].password,
+      userName: userLogin.rows[0].user_name,
+      accountId: userLogin.rows[0].account_id,
+      profile: {
+        id: userLogin.rows[0].profile_id
+      }
+    };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+
+};

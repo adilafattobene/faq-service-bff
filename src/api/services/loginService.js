@@ -1,11 +1,18 @@
 const hashService = require("../services/hashService");
 const jwtService = require("../services/jwtService");
 const accountClient = require("../clients/accountServiceClient");
+const userModel = require("../models/userModel");
 
 exports.getLogin = async (login) => {
   try {
-    const response = await accountClient.getUserLoginByUserName(login.userName);
+    let response;
 
+    if (process.env.DSWL_PROJECT_USE_MODELS) {
+      response = await userModel.getUserLoginByUserName(login.userName);
+    } else {
+      response = await accountClient.getUserLoginByUserName(login.userName);
+    }
+    
     if (await hashService.comparePassword(login.password, response.password)) {
       const userId = response.userId;
       const profileId = response.profile.id;
@@ -15,7 +22,7 @@ exports.getLogin = async (login) => {
       const jwtToken = jwtService.createJwtToken(jwtPayload);
 
       return {
-        userId, 
+        userId,
         profileId,
         auth: true,
         token: jwtToken,
@@ -24,6 +31,7 @@ exports.getLogin = async (login) => {
       throw Error("invalid_password");
     }
   } catch (err) {
+    console.log(err)
     throw err;
   }
 };
