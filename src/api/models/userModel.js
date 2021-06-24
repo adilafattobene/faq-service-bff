@@ -227,7 +227,7 @@ exports.getUserLoginByUserName = async function (userName) {
     connection.end();
 
     return {
-      id: userLogin.rows[0].id,
+      userId: userLogin.rows[0].id,
       password: userLogin.rows[0].password,
       userName: userLogin.rows[0].user_name,
       accountId: userLogin.rows[0].account_id,
