@@ -41,7 +41,8 @@ exports.getUsersById = async (token, userId) => {
       throw Error("not_authorized");
     }
     let res = undefined;
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       res = await userModel.getUsersById(userId);
     } else {
       res = await accountClient.getUsersById(userId);
