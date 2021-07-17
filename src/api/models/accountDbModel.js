@@ -61,7 +61,6 @@ exports.getUser = async function (userId) {
         name: user.rows[0].companyname,
       },
     };
-
   } catch (err) {
     console.log(err);
   } finally {
@@ -377,6 +376,37 @@ exports.changeUserName = async (userId, bodyToChange) => {
     return {
       id: accountChanged.rows[0].id,
       name: accountChanged.rows[0].name,
+    };
+  } catch (err) {
+    console.log(err);
+  } finally {
+    connection.end();
+  }
+};
+
+exports.getUserLoginByUserId = async function (userId) {
+  let connection = dbConnection();
+
+  connection.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Conectado");
+  });
+
+  try {
+    const sql = "select * from login where account_id = $1";
+    const sqlValues = [userId];
+
+    const login = await connection.query(sql, sqlValues);
+
+    connection.end();
+
+    return {
+      id: login.rows[0].id,
+      password: login.rows[0].password,
+      userName: login.rows[0].user_name,
+      profile: { id: login.rows[0].profile_id },
     };
   } catch (err) {
     console.log(err);
