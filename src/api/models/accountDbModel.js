@@ -40,13 +40,28 @@ exports.getUser = async function (userId) {
     console.log("Conectado");
   });
   try {
-    let sql = "select * from account where id=$1";
+    let sql =
+      "select  a.id as userId, " +
+      "a.name as name, " +
+      "c.id as companyId, " +
+      "c.name as companyName " +
+      "from account a " +
+      "inner join company c on c.id = a.company_id " +
+      "where a.id = $1";
 
-    const a = await connection.query(sql, [userId]);
+    const user = await connection.query(sql, [userId]);
 
     connection.end();
 
-    return a.rows[0];
+    return {
+      id: user.rows[0].userid,
+      name: user.rows[0].name,
+      company: {
+        id: user.rows[0].companyid,
+        name: user.rows[0].companyname,
+      },
+    };
+
   } catch (err) {
     console.log(err);
   } finally {
