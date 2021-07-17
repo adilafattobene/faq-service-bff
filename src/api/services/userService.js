@@ -95,7 +95,7 @@ exports.createChild = async (token, user, userId) => {
 
     let userCreated;
 
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       userCreated = await userModel.createUserChild(
         userId,
         copyUserWIthPasswordHashed(passHashed, user)
