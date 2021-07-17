@@ -86,6 +86,12 @@ exports.createUser = async function (user) {
   });
 
   try {
+    let userDB = await this.getUserLoginByUserName(user.userName);
+
+    if (userDB.userName === user.userName) {
+      throw Error("conflict_error");
+    }
+
     let sqlCompany =
       "insert into company(id, name) values ($1, $2) RETURNING *";
     let sqlValuesCompany = [v4(), user.companyName];
@@ -102,7 +108,7 @@ exports.createUser = async function (user) {
       "insert into login(id, user_name, password, account_id, profile_id) values ($1, $2, $3, $4, $5) RETURNING *";
     let sqlValuesLogin = [
       v4(),
-      user.name,
+      user.userName,
       user.password,
       account.rows[0].id,
       "fcec55dc-9d24-4c0d-99ad-c99960660f2c",
