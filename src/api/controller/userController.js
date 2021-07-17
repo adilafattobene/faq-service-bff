@@ -141,6 +141,13 @@ exports.createChild = async (req, res) => {
       });
     }
 
+    if (err.message === "owner_not_found") {
+      return res.status(404).json({
+        auth: false,
+        message: "User owner not found",
+      });
+    }
+
     if (err.message === "unauthorized_profile") {
       return res.status(401).json({
         auth: false,

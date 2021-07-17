@@ -138,6 +138,10 @@ exports.createUserChild = async function (userId, user) {
   try {
     let ownerUser = await this.getUser(userId);
 
+    if (!ownerUser) {
+      throw Error("not_found");
+    }
+
     let sqlAccount =
       "insert into account(id, name, company_id, owner_id) values ($1, $2, $3, $4) RETURNING *";
     let sqlValuesAccount = [
