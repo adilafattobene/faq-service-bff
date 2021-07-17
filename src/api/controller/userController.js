@@ -354,6 +354,14 @@ exports.changeUserLogin = async (req, res, next) => {
       });
     }
 
+    if (err.message === "conflict_error") {
+      return res.status(409).json({
+        auth: false,
+        message:
+          "Já existe um usuário cadastrado",
+      });
+    }
+
     console.log(err);
     return res
       .status(500)

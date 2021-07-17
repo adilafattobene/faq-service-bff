@@ -1,5 +1,6 @@
 const dbConnection = require("../../config/dbServer");
 const { v4 } = require("uuid");
+const { password } = require("pg/lib/defaults");
 
 exports.getUserProfile = async function (userId) {
   let connection = dbConnection();
@@ -120,7 +121,7 @@ exports.createUser = async function (user) {
   try {
     let userDB = await this.getUserLoginByUserName(user.userName);
 
-    if (userDB.userName === user.userName) {
+    if (userDB) {
       throw Error("conflict_error");
     }
 
@@ -315,7 +316,7 @@ exports.getUserLoginByUserName = async function (userName) {
       };
     }
 
-    throw Error("not_found");
+    return undefined;
   } catch (err) {
     console.log(err);
   } finally {
@@ -324,6 +325,7 @@ exports.getUserLoginByUserName = async function (userName) {
 };
 
 exports.changeUser = async (userId, bodyToChange) => {
+  let body;
   let connection = dbConnection();
 
   connection.connect(function (err) {
@@ -336,16 +338,60 @@ exports.changeUser = async (userId, bodyToChange) => {
   try {
     let user = await this.getUser(userId);
 
-    const sqlCompany = "update company set name=$1 where id=$2";
-    const sqlValuesCompany = [bodyToChange.company.name, user.company_id];
+    let companyChanged;
 
-    const companyChanged = await connection.query(sqlCompany, sqlValuesCompany);
+    if (bodyToChange.company) {
+      const sqlCompany = "update company set name=$1 where id=$2";
+      const sqlValuesCompany = [bodyToChange.company.name, user.company_id];
+
+      companyChanged = await connection.query(sqlCompany, sqlValuesCompany);
+      body = { ...body, company: companyChanged };
+    }
+
+    if (bodyToChange.login) {
+      let bodyLogin;
+
+      if (bodyToChange.login.password) {
+        const sqlLoginPassword =
+          "update login set password=$1 where account_id=$2 RETURNING *";
+        const sqlValuesLoginPassword = [bodyToChange.login.password, userId];
+
+        let passwordChanged = await connection.query(
+          sqlLoginPassword,
+          sqlValuesLoginPassword
+        );
+
+        bodyLogin = { ...bodyLogin, password: passwordChanged.rows[0].password };
+      }
+
+      if (bodyToChange.login.userName) {
+
+        let userDB = await this.getUserLoginByUserName(bodyToChange.login.userName);
+
+        if (userDB) {
+          throw Error("conflict_error");
+        }
+
+        const sqlLoginUserName =
+          "update login set user_name=$1 where account_id=$2 RETURNING *";
+        const sqlValuesLoginUserName = [bodyToChange.login.userName, userId];
+
+        let userNameChanged = await connection.query(
+          sqlLoginUserName,
+          sqlValuesLoginUserName
+        );
+        console.log(userNameChanged)
+        bodyLogin = { ...bodyLogin, userName: userNameChanged.rows[0].user_name };
+      }
+      console.log("bodyLogin")
+      console.log(bodyLogin)
+      body = { ...body, bodyLogin };
+    }
 
     connection.end();
-
-    return companyChanged.rows[0];
+    return body;
   } catch (err) {
-    console.log(err);
+    throw err;
   } finally {
     connection.end();
   }

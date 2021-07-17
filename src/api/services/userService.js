@@ -14,7 +14,7 @@ exports.getUser = async (token, userId) => {
     let profile = undefined;
     let user = undefined;
 
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       profile = await userModel.getUserProfile(userId);
 
       user = await userModel.getUser(userId);
@@ -41,7 +41,7 @@ exports.getUsersById = async (token, userId) => {
       throw Error("not_authorized");
     }
     let res = undefined;
-    
+
     if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       res = await userModel.getUsersById(userId);
     } else {
@@ -227,26 +227,68 @@ exports.changeUserLogin = async (token, userLogin, userId) => {
       throw Error("unauthorized_profile");
     }
 
-    const responseUser = await accountClient.getUserLoginByUserId(userId);
+    let responseUser;
 
-    if (
-      await hashService.comparePassword(
-        userLogin.oldPassword,
-        responseUser.password
-      )
-    ) {
-      const userLoginChanged = await accountClient.changeUser(userId, {
-        login: {
-          userName: userLogin.login.username,
-          password: await hashService.hashingPasswordAsync(
-            userLogin.login.password
-          ),
-        },
-      });
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
+      responseUser = await userModel.getUserLoginByUserId(userId);
+    } else {
+      responseUser = await accountClient.getUserLoginByUserId(userId);
+    }
+
+    let userLoginChanged;
+    if (userLogin.login.password) {
+      if (
+        await hashService.comparePassword(
+          userLogin.oldPassword,
+          responseUser.password
+        )
+      ) {
+        if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
+          let b;
+
+          if (userLogin.login.username) {
+            b = { ...b, userName: userLogin.login.username };
+          }
+
+          userLoginChanged = await userModel.changeUser(userId, {
+            login: {
+              ...b,
+              password: await hashService.hashingPasswordAsync(
+                userLogin.login.password
+              ),
+            },
+          });
+        } else {
+          userLoginChanged = await accountClient.changeUser(userId, {
+            login: {
+              userName: userLogin.login.username,
+              password: await hashService.hashingPasswordAsync(
+                userLogin.login.password
+              ),
+            },
+          });
+        }
+
+        return userLoginChanged;
+      } else {
+        throw Error("invalid_password");
+      }
+    } else {
+      if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
+        userLoginChanged = await userModel.changeUser(userId, {
+          login: {
+            userName: userLogin.login.username,
+          },
+        });
+      } else {
+        userLoginChanged = await accountClient.changeUser(userId, {
+          login: {
+            userName: userLogin.login.username,
+          },
+        });
+      }
 
       return userLoginChanged;
-    } else {
-      throw Error("invalid_password");
     }
   } catch (err) {
     throw err;
