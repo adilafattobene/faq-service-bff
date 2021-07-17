@@ -7,7 +7,7 @@ exports.getLogin = async (login) => {
   try {
     let response;
 
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    if (process.env.DSWL_PROJECT_USE_MODELS==="true") {
       response = await userModel.getUserLoginByUserName(login.userName);
     } else {
       response = await accountClient.getUserLoginByUserName(login.userName);
