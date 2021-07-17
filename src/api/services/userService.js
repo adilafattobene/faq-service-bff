@@ -169,7 +169,7 @@ exports.changeUser = async (token, user, userId) => {
 
     let userChanged;
 
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       userChanged = await userModel.changeUserName(userId, {
         name: user.name,
       });
