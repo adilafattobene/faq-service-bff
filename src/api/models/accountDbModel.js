@@ -61,13 +61,21 @@ exports.getUsersById = async function (userId) {
   });
 
   try {
-    let sql = "select * from account where owner_id=$1";
+    let sql =
+      "select a.id as id, " +
+      "a.name as name, " +
+      "l.user_name as userName, " +
+      "p.description as profile " +
+      "from account a " +
+      "inner join login l on a.id = l.account_id " +
+      "inner join profile p on p.id = l.profile_id " +
+      "where a.owner_id =$1";
 
-    const a = await connection.query(sql, [userId]);
+    const children = await connection.query(sql, [userId]);
 
     connection.end();
 
-    return a.rows;
+    return children.rows;
   } catch (err) {
     console.log(err);
   } finally {
