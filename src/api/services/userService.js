@@ -59,7 +59,7 @@ exports.createUser = async (user) => {
 
     let userCreated = undefined;
 
-    if (process.env.DSWL_PROJECT_USE_MODELS) {
+    if (process.env.DSWL_PROJECT_USE_MODELS === "true") {
       userCreated = await userModel.createUser(
         copyUserWIthPasswordHashed(passHashed, user)
       );
