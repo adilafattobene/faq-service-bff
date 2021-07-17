@@ -51,6 +51,12 @@ exports.getUser = async function (userId) {
 };
 
 exports.getUsersById = async function (userId) {
+  let ownerUser = await this.getUser(userId);
+
+  if (!ownerUser) {
+    throw Error("not_found");
+  }
+
   let connection = dbConnection();
 
   connection.connect(function (err) {
