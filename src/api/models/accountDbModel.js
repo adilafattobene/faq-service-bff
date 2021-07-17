@@ -242,15 +242,19 @@ exports.getUserLoginByUserName = async function (userName) {
 
     connection.end();
 
-    return {
-      id: userLogin.rows[0].id,
-      password: userLogin.rows[0].password,
-      userName: userLogin.rows[0].user_name,
-      userId: userLogin.rows[0].account_id,
-      profile: {
-        id: userLogin.rows[0].profile_id,
-      },
-    };
+    if (userLogin.rows[0]) {
+      return {
+        id: userLogin.rows[0].id,
+        password: userLogin.rows[0].password,
+        userName: userLogin.rows[0].user_name,
+        userId: userLogin.rows[0].account_id,
+        profile: {
+          id: userLogin.rows[0].profile_id,
+        },
+      };
+    }
+
+    throw Error("not_found");
   } catch (err) {
     console.log(err);
   } finally {
