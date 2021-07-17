@@ -12,7 +12,11 @@ exports.getUserProfile = async function (userId) {
   });
 
   try {
-    let sql = "select * from login where account_id=$1";
+    let sql =
+      "select p.id, p.description " +
+      "from login l " +
+      "inner join profile p on p.id = l.profile_id " +
+      "where account_id = $1";
 
     const a = await connection.query(sql, [userId]);
 
