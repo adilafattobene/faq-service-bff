@@ -153,27 +153,40 @@ exports.createUserChild = async function (userId, user) {
 
     const account = await connection.query(sqlAccount, sqlValuesAccount);
 
-    let sqlLogin =
-      "insert into login(id, user_name, password, account_id, profile_id) values ($1, $2, $3, $4, $5) RETURNING *";
-    let sqlValuesLogin = [
-      v4(),
-      user.name,
-      user.password,
-      account.rows[0].id,
-      "b2e2e9a8-0497-466d-9c32-787f11989431",
-    ];
+    if (account) {
+      let sqlLogin =
+        "insert into login(id, user_name, password, account_id, profile_id) values ($1, $2, $3, $4, $5) RETURNING *";
+      let sqlValuesLogin = [
+        v4(),
+        user.name,
+        user.password,
+        account.rows[0].id,
+        "b2e2e9a8-0497-466d-9c32-787f11989431",
+      ];
 
-    const login = await connection.query(sqlLogin, sqlValuesLogin);
+      const login = await connection.query(sqlLogin, sqlValuesLogin);
 
-    connection.end();
+      connection.end();
 
-    return {
-      id: account.rows[0].id,
-      name: account.rows[0].name,
-      login: login.rows[0],
-    };
+      if (login) {
+        return {
+          id: account.rows[0].id,
+          name: account.rows[0].name,
+          login: login.rows[0],
+        };
+      }
+
+      throw Error("create_login_error");
+    } else {
+      throw Error("create_user_error");
+    }
   } catch (err) {
-    console.log(err);
+    if (err.message === "create_login_error") {
+      // TODO
+      //precisa deletar o usuario criado
+    }
+
+    throw err;
   } finally {
     connection.end();
   }
