@@ -142,6 +142,12 @@ exports.createUserChild = async function (userId, user) {
       throw Error("not_found");
     }
 
+    let userDB = await this.getUserLoginByUserName(user.userName);
+
+    if (userDB) {
+      throw Error("conflict_error");
+    }
+
     let sqlAccount =
       "insert into account(id, name, company_id, owner_id) values ($1, $2, $3, $4) RETURNING *";
     let sqlValuesAccount = [
@@ -158,7 +164,7 @@ exports.createUserChild = async function (userId, user) {
         "insert into login(id, user_name, password, account_id, profile_id) values ($1, $2, $3, $4, $5) RETURNING *";
       let sqlValuesLogin = [
         v4(),
-        user.name,
+        user.userName,
         user.password,
         account.rows[0].id,
         "b2e2e9a8-0497-466d-9c32-787f11989431",

@@ -162,6 +162,13 @@ exports.createChild = async (req, res) => {
       });
     }
 
+    if (err.message === "conflict_error") {
+      return res.status(409).json({
+        auth: false,
+        message: "There is a user with this crendentials.",
+      });
+    }
+
     return res
       .status(500)
       .json({ message: "Something is wrong - createChild." });
